@@ -1,0 +1,22 @@
+{
+  "name" : "archey347/userfrosting-dns-admin",
+  "type" : "userfrosting-sprinkle",
+  "description":  "This sprinkle gives a front end for managing zone files on a BIND DNS Server",
+  "license" : "MIT",
+  "authors" : [
+    {
+      "name" : "Archey Barrell"
+    }
+  ],
+  "require" : {
+      "badcow/dns" : "~v0.19"
+  },
+  "autoload": {
+    "psr-4": {
+      "Userfrosting\\Sprinkle\\Site\\": "src/"
+    }
+  },
+  "extra": {
+    "installer-name" : "DNSAdmin"
+  }
+}
