@@ -1,6 +1,8 @@
 <?php
 
 $app->group('/api/dns', function () use ($app) {
+  $app->get('/zones', 'UserFrosting\Sprinkle\Dnsadmin\Controller\ApiController:getZones');
+
   $app->get('/z/{zone_name}', 'UserFrosting\Sprinkle\Dnsadmin\Controller\ApiController');
   $app->post('/z/{zone_name}', 'UserFrosting\Sprinkle\Dnsadmin\Controller\ApiController');
   $app->put('/z/{zone_name}', 'UserFrosting\Sprinkle\Dnsadmin\Controller\ApiController');
