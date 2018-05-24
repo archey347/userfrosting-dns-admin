@@ -11,12 +11,13 @@
   "require" : {
       "badcow/dns" : "~v0.19"
   },
+
+  "extra": {
+    "installer-name" : "dnsadmin"
+  },
   "autoload": {
     "psr-4": {
-      "Userfrosting\\Sprinkle\\Site\\": "src/"
+      "UserFrosting\\Sprinkle\\Dnsadmin\\": "src/"
     }
-  },
-  "extra": {
-    "installer-name" : "DNSAdmin"
   }
 }
