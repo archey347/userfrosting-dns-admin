@@ -20,6 +20,9 @@ class Zone extends Model
      */
     protected $table = 'zones';
 
+    /**
+     * @var array The fieds which are writeable?
+     */
     protected $fillable = [
         'type',
         'ttl',
@@ -32,7 +35,10 @@ class Zone extends Model
         'expiry'
     ];
 
-    public entries() {
+    /**
+     * @method enteries() Gets all of the zone entries
+     */
+    public function entries() {
       return $this->hasMany('UserFrosting\Sprinkle\Dnsadmin\Database\Models\ZoneEntries');
     }
 }
