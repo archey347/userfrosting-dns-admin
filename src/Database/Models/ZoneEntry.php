@@ -4,7 +4,7 @@ namespace UserFrosting\Sprinkle\Dnsadmin\Database\Models;
 
 use UserFrosting\Sprinkle\Core\Database\Models\Model;
 
-class Zones extends Model
+class ZoneEntry extends Model
 {
     public $timestamps = true;
 

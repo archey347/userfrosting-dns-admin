@@ -11,7 +11,7 @@ use UserFrosting\Sprinkle\Core\Database\Models\Model;
   * @extends Model
   * @author Archey Barrell
   */
-class Zones extends Model
+class Zone extends Model
 {
     public $timestamps = true;
 
