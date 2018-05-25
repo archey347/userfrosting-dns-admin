@@ -13,17 +13,16 @@ use UserFrosting\System\Bakery\Migration;
   * @extends Migration
   * @author Archey Barrell
   */
-class ZonesTable extends Migration
+class ZoneEntriesTable extends Migration
 {
     /**
       * {@inheritDoc}
       */
     public function up()
     {
-      if(!$this->schema->hasTable('zones')) {
+      /*if(!$this->schema->hasTable('zones')) {
         $this->schema->create('zones', function (Blueprint $table) {
           $table->increments('id');
-          $table->string('name', 1000);
           $table->string('type', 100);
           $table->integer('ttl');
           $table->string('primary_dns', 500);
@@ -35,13 +34,13 @@ class ZonesTable extends Migration
           $table->integer('expiry');
 
         });
-      }
+      }*/
     }
     /**
       * {@inheritDoc}
       */
     public function down()
     {
-      $this->schema->drop('zones');
+      //$this->schema->drop('zones');
     }
 }

@@ -25,6 +25,7 @@ class Zone extends Model
      */
     protected $fillable = [
         'type',
+        'name',
         'ttl',
         'primary_dns',
         'admin_domain',
@@ -36,9 +37,24 @@ class Zone extends Model
     ];
 
     /**
+     * @var array All of the calculated fields
+     */
+    protected $appends = [
+      'is_normal'
+    ];
+
+
+    /**
      * @method enteries() Gets all of the zone entries
      */
     public function entries() {
       return $this->hasMany('UserFrosting\Sprinkle\Dnsadmin\Database\Models\ZoneEntries');
+    }
+
+    /**
+     * @method getIsNormalAttribute() Checks if the zone is a normal one
+     */
+    public function getIsNormalAttribute() {
+      return $this->type == "normal";
     }
 }

@@ -20,6 +20,13 @@ use UserFrosting\Sprinkle\Dnsadmin\Database\Models\Zone;
 class ZonesSprunje extends Sprunje
 {
   /**
+   * @var array The fieds which are sortable
+   */
+  protected $sortable = [
+      'name',
+  ];
+
+  /**
     * Set the initial query used by the sprunje
     */
   protected function baseQuery()

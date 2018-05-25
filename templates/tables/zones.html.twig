@@ -1,0 +1,26 @@
+{% extends "tables/table-paginated.html.twig" %}
+
+{% block table %}
+  <table id="{{table.id}}" class="tablesorter table table-bordered table-hover table-striped" data-sortlist="{{table.sortlist}}">
+    <thead>
+     <th class="sorter-metatext" data-column-name="name" data-column-template="#zone-table-column-info" data-priority="1">Zone Name</th>
+     <!--<th class="sorter-metanum" data-column-name="amount_of_entries" data-column-template="#zone-table-column-amount-of-Entries" data-priority="2">Amount Of Entries</th>
+     <th class="sorter-metatext" data-column-template="#zone-table-column-actions" data-priority="1">Actions</th>-->
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+{% endblock %}
+
+{% block table_cell_templates %}
+    {% verbatim %}
+      <script id="zone-table-column-info" type="text/x-handlebars-template">
+        <td data-text="{{row.name}}">
+          <h4>
+              <a href="{{site.uri.public}}/zones/z/{{row.name}}">{{row.name}}</a>
+          </h4>
+          Type: {{#if row.is_normal }}Normal{{else}}Reverse{{/if}}
+        </td>
+      </script>
+    {% endverbatim %}
+{% endblock %}

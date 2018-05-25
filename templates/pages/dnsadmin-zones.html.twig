@@ -5,4 +5,22 @@
 {% block page_description %}Manage the DNS Zones{% endblock %}
 
 {% block body_matter %}
+  <div id="zones-table" class="box box-primary">
+    <div class="box-header">
+      <h3 class="box-title pull-left"><i class="fa fa-fw fa-globe"></i> Zones</h3>
+      {% include "tables/table-tool-menu.html.twig" %}
+    </div>
+    <div class="box-body">
+      {% include "tables/zones.html.twig" with {
+          "table" : {
+            "id" : "table-zones"
+          }
+        }
+      %}
+    </div>
+    <div class="box-footer">
+  </div>
+{% endblock %}
+{% block scripts_page %}
+  {{ assets.js('js/pages/zones-admin') | raw }}
 {% endblock %}
