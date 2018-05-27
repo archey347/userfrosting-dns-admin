@@ -48,7 +48,7 @@ class Zone extends Model
      * @method enteries() Gets all of the zone entries
      */
     public function entries() {
-      return $this->hasMany('UserFrosting\Sprinkle\Dnsadmin\Database\Models\ZoneEntries');
+      return $this->hasMany('UserFrosting\Sprinkle\Dnsadmin\Database\Models\ZoneEntry');
     }
 
     /**
@@ -57,4 +57,5 @@ class Zone extends Model
     public function getIsNormalAttribute() {
       return $this->type == "normal";
     }
+
 }

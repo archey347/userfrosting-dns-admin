@@ -11,17 +11,11 @@ class ZoneEntry extends Model
     /**
      * @var string The name of the table for the current model.
      */
-    protected $table = 'zones';
+    protected $table = 'zone_entries';
 
     protected $fillable = [
         'type',
-        'ttl',
-        'primary_dns',
-        'admin_domain',
-        'serial_number',
-        'serial_number_mode',
-        'refresh',
-        'retry',
-        'expiry'
+        'name',
+        'value'
     ];
 }

@@ -20,27 +20,23 @@ class ZoneEntriesTable extends Migration
       */
     public function up()
     {
-      /*if(!$this->schema->hasTable('zones')) {
-        $this->schema->create('zones', function (Blueprint $table) {
+      if(!$this->schema->hasTable('zone_entries')) {
+        $this->schema->create('zone_entries', function (Blueprint $table) {
           $table->increments('id');
-          $table->string('type', 100);
-          $table->integer('ttl');
-          $table->string('primary_dns', 500);
-          $table->string('admin_domain', 500);
-          $table->integer('serial_number');
-          $table->string("serial_number_mode", 100);
-          $table->integer('refresh');
-          $table->integer('retry');
-          $table->integer('expiry');
+          $table->integer('zone_id');
+          $table->string('type');
+          $table->string('name', 1000);
+          $table->string('value', 1000);
 
+          $table->index('zone_id');
         });
-      }*/
+      }
     }
     /**
       * {@inheritDoc}
       */
     public function down()
     {
-      //$this->schema->drop('zones');
+      $this->schema->drop('zone_entries');
     }
 }
