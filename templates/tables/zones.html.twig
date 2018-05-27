@@ -4,6 +4,12 @@
   <table id="{{table.id}}" class="tablesorter table table-bordered table-hover table-striped" data-sortlist="{{table.sortlist}}">
     <thead>
      <th class="sorter-metatext" data-column-name="name" data-column-template="#zone-table-column-info" data-priority="1">Zone Name</th>
+     <th class="sorter-metatext" data-column-name="primary_dns" data-column-template="#zone-table-column-serial-number" data-priority="1">Serial Number</th>
+     <th class="sorter-metatext" data-column-name="admin_domain" data-column-template="#zone-table-column-domains" data-priority="1">Domains</th>
+     <th class="sorter-metatext" data-column-template="#zone-table-column-details" data-priority="1">Details</th>
+     <th class="" data-column-name="actions" data-column-template="#zone-table-column-actions" data-priority="1">Actions</th>
+
+
      <!--<th class="sorter-metanum" data-column-name="amount_of_entries" data-column-template="#zone-table-column-amount-of-Entries" data-priority="2">Amount Of Entries</th>
      <th class="sorter-metatext" data-column-template="#zone-table-column-actions" data-priority="1">Actions</th>-->
     </thead>
@@ -19,7 +25,49 @@
           <h4>
               <a href="{{site.uri.public}}/zones/z/{{row.name}}">{{row.name}}</a>
           </h4>
-          Type: {{#if row.is_normal }}Normal{{else}}Reverse{{/if}}
+          <b>Type:</b> {{#if row.is_normal }}Normal{{else}}Reverse{{/if}}
+        </td>
+      </script>
+      <script id="zone-table-column-serial-number" type="text/x-handlebars-template">
+        <td>
+          {{row.serial_number}}
+
+        </td>
+      </script>
+      <script id="zone-table-column-domains" type="text/x-handlebars-template">
+        <td data-text="{{row.admin_domain}}">
+          <b>Primary Nameserver:</b> {{row.primary_dns}}<br>
+          <b>Admin Domain:</b> {{row.admin_domain}}
+        </td>
+      </script>
+      <script id="zone-table-column-details" type="text/x-handlebars-template">
+        <td>
+          <b>Refresh:</b> {{row.refresh}}<br>
+          <b>Retry: </b>{{row.retry}}<br>
+          <b>Expiry: </b>{{row.expiry}}
+        </td>
+      </script>
+      <script id="zone-table-column-actions" type="text/x-handlebars-template">
+        <td data-text="{{row.admin_domain}}">
+          <div class="btn-group">
+            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+              Actions
+              <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-right" role="menu">
+              <li>
+                <a href="">
+                  <i class="fa fa-columns"></i> Manage Entries
+                </a>
+              </li>
+              <li>
+                <a href="">
+                  <i class="fa fa-cogs"></i> Zone Settings
+                </a>
+              </li>
+            </ul>
+          </div>
+
         </td>
       </script>
     {% endverbatim %}
