@@ -11,6 +11,18 @@
           }
         }
       }
+    },
+    "js/pages/zone-entries-admin": {
+      "scripts": [
+        "userfrosting/js/widgets/zone-entries-admin.js"
+      ],
+      "options": {
+        "result": {
+          "type": {
+            "scripts": "plain"
+          }
+        }
+      }
     }
   }
 }

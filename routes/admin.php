@@ -2,6 +2,8 @@
 
 $app->group('/dnsadmin', function () use ($app) {
   $app->get('', 'UserFrosting\Sprinkle\Dnsadmin\Controller\AdminController:pageZonesAdmin');
+  $app->get('/zones/z/{id}', 'UserFrosting\Sprinkle\Dnsadmin\Controller\AdminController:pageZoneEntriesAdmin');
+
 });
 
 $app->group('/modals/dnsadmin', function () use ($app) {

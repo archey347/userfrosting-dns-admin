@@ -51,6 +51,38 @@ class AdminController extends SimpleController
   }
 
   /**
+    * Generates the admin page for managing the zone entries
+    *
+    * @param Request $request
+    * @param Response $response
+    * @param array $args
+    * @return Response
+    */
+  public function pageZoneEntriesAdmin(Request $request, Response $response, $args)
+  {
+    /*// Get the zone create validation rules
+    $schema_create = new RequestSchema('schema://requests/zone-create.yaml');
+    $validator_create = new JqueryValidationAdapter($schema_create, $this->ci->translator);
+
+    // Get the zone edit validation rules
+    $schema_edit = new RequestSchema('schema://requests/zone-edit.yaml');
+    $validator_edit = new JqueryValidationAdapter($schema_edit, $this->ci->translator);
+    */
+
+    $zone = Zone::find($args['id']);
+
+    if(!$zone) {
+      return NotFoundException($request, $response);
+    }
+
+    return $this->ci->view->render($response, 'pages/dnsadmin-zone-entries.html.twig', [
+      'page' => [
+        'zone' => $zone->toArray()
+      ]
+    ]);
+  }
+
+  /**
     * Generates the modal form for creating a zone
     *
     * @param Request $request

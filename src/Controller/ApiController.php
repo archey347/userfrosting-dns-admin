@@ -11,6 +11,7 @@ use UserFrosting\Sprinkle\Core\Controller\SimpleController;
 use Slim\Http\Request;
 use Slim\Http\Response;
 use UserFrosting\Sprinkle\Dnsadmin\Sprunje\ZonesSprunje;
+use UserFrosting\Sprinkle\Dnsadmin\Sprunje\ZoneEntriesSprunje;
 use UserFrosting\Fortress\RequestDataTransformer;
 use UserFrosting\Fortress\RequestSchema;
 use UserFrosting\Fortress\ServerSideValidator;
@@ -216,5 +217,36 @@ class ApiController extends SimpleController
 
       $ms->addMessage('success', "Zone '$zone_name' has been deleted.");
 
+  }
+
+  /**
+    * Gets a list of all of the zone entries
+    * Method Type: GET
+    *
+    * @param Request $request
+    * @param Response $response
+    * @param array $args
+    * @return void
+    */
+  public function getZoneEntries(Request $request, Response $response, $args)
+  {
+    $ms = $this->ci->alerts;
+
+    $zone = Zone::find($args['id']);
+
+    if(!$zone) {
+      $ms->addMessage('danger', 'Zone Not Found.');
+      return $response->withStatus(404);
+    }
+
+    // Get the GET parameters
+    $params = $request->getQueryParams();
+
+    /** @var UserFrosting\Sprinkle\Core\Util\ClassMapper $classMapper */
+    $classMapper = $this->ci->classMapper;
+
+    $sprunje = new ZoneEntriesSprunje($classMapper, $params, $zone->id);
+
+    return $sprunje->toResponse($response);
   }
 }
