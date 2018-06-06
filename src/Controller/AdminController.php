@@ -107,5 +107,38 @@ class AdminController extends SimpleController
     ]);
   }
 
+  /**
+    * Generates the modal form for editing a zone
+    *
+    * @param Request $request
+    * @param Response $response
+    * @param array $args
+    * @return Response
+    */
+  public function modalDeleteZone(Request $request, Response $response, $args)
+  {
+    $ms = $this->ci->alerts;
+
+    $zone_id = $request->getQueryParam('id');
+
+    if($zone_id == null) {
+      $ms->addMessage('danger', "No Zone ID specified.");
+      return $response->withStatus(400);
+    }
+
+    $zone = Zone::find($zone_id);
+
+    if(!$zone) {
+      $ms->addMessage('danger', 'Invalid Zone ID.');
+      return $response->withStatus(400);
+    }
+
+    return $this->ci->view->render($response, 'modals/zone-delete.html.twig', [
+      "form" => [
+        "action" => "api/dns/zones/z/" . $zone_id
+      ],
+      "zone" => $zone->toArray()
+    ]);
+  }
 
 }

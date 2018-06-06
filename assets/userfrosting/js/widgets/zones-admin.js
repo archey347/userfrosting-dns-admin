@@ -72,6 +72,24 @@ function bindZoneTableButtons(el) {
         });
       });
     });
+
+    el.find('.js-zone-delete').click(function() {
+      $('body').ufModal({
+        sourceUrl : site.uri.public + '/modals/dnsadmin/delete-zone',
+        ajaxParams : {
+          id : $(this).data('zone')
+        },
+        msgTarget: $('#alerts-page')
+      });
+
+      $('body').on("renderSuccess.ufModal", function (data) {
+        $('#form-zone-delete').ufForm({
+          msgTarget : $('#form-delete-zone-alerts')
+        }).on("submitSuccess.ufForm", function(event, data, textStatus, jqXHR) {
+          window.location.reload();
+        });
+      });
+    });
 }
 
 function getTimestamp() {

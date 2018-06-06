@@ -1,0 +1,17 @@
+{% extends "modals/modal.html.twig" %}
+
+{% block modal_title %}Zone{% endblock %}
+
+{% block modal_body %}
+<form id="form-zone-delete" class="js-form" method="delete" action="{{site.uri.public}}/{{form.action}}">
+    {% include "forms/csrf.html.twig" %}
+    <div class="js-form-alerts" id="form-delete-zone-alerts">
+    </div>
+    <h4>Are you sure you want to delete '{{zone.name}}' and all of its entries?<br><small>{{translate("DELETE_CANNOT_UNDONE")}}</small></h4>
+    <br>
+    <div class="btn-group-action">
+        <button type="submit" class="btn btn-danger btn-lg btn-block">Delete Zone</button>
+        <button type="button" class="btn btn-default btn-lg btn-block" data-dismiss="modal">{{translate("CANCEL")}}</button>
+    </div>
+</form>
+{% endblock %}

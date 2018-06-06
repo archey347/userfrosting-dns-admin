@@ -186,4 +186,35 @@ class ApiController extends SimpleController
       $ms->addMessage('success', "Successfully modified zone '{$data['name']}'");
 
   }
+
+  /**
+   * Deletes a zone
+   *
+   * @param Request $request
+   * @param Response $response
+   * @param array $args
+   * @return void
+   */
+  public function deleteZone(Request $request, Response $response, $args)
+  {
+      $ms = $this->ci->alerts;
+
+      $zone = Zone::find($args['id']);
+
+      if(!$zone) {
+        $ms->addMessage('danger', 'Zone Not Found.');
+        return $response->withStatus(404);
+      }
+
+      $zone_name = $zone->name;
+
+      Capsule::transaction(function() use($zone) {
+        $zone->entries()->delete();
+        $zone->delete();
+
+      });
+
+      $ms->addMessage('success', "Zone '$zone_name' has been deleted.");
+
+  }
 }
