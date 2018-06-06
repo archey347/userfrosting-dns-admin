@@ -34,6 +34,8 @@ class ZonesTable extends Migration
           $table->integer('retry');
           $table->integer('expiry');
 
+          $table->timestamps();
+
         });
       }
     }

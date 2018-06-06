@@ -28,6 +28,8 @@ class ZoneEntriesTable extends Migration
           $table->string('name', 1000);
           $table->string('value', 1000);
 
+          $table->timestamps();
+
           $table->index('zone_id');
         });
       }
