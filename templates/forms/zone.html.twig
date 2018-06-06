@@ -1,0 +1,96 @@
+<form id="{{form.id}}" class="js-form" method="{{form.method}}" action="{{site.uri.public}}/{{form.action}}">
+
+  {% include "forms/csrf.html.twig" %}
+  {% verbatim %}
+  <div class="js-form-alerts" id="form-zone-alerts">
+  </div>
+  <div class="row">
+  <div class="col-sm-6">
+  <div class="form-group">
+
+        <label>Zone Type</label>
+        <select v-model="zone_type" class="form-control input-small" name="type">
+          <option value="normal" default>Normal</option>
+          <option value="reverse">Reverse</option>
+        </select>
+
+  </div>
+
+  <div v-if="zone_type == 'normal'">
+    <div class="form-group">
+      <label>Zone Name</label>
+      <p>This is the domain name of the zone. For example, if you wanted to create domain name such as ftp.example.com, then you would type in here example.com.</p>
+      <input v-model="domain" name="name" type="text" class="form-control" placeholder="e.g. example.com">
+    </div>
+  </div>
+  <div v-else>
+    <div class="form-group">
+      <label>IP Address Range</label>
+
+      <p>Put in here <b>just</b> the subnet identifier of the network that you are configuring reverse lookups for.
+      </p>
+      <input name="name" type="text" class="form-control" placeholder="e.g. 192.168.0">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label>TTL</label>
+    <input type="text" class="form-control" name="ttl" value="3600"/>
+  </div>
+
+  <div class="form-group">
+    <label>Primary Name Server</label>
+    <input type="text" name="primary_dns" class="form-control" v-bind:placeholder="'e.g. ns1.'+domain" />
+  </div>
+
+  <div class="form-group">
+    <label>Admin Domain</label>
+    <input type="text" name="admin_domain" class="form-control" v-bind:placeholder="'e.g. root.' + domain" />
+  </div>
+
+</div>
+<div class="col-sm-6">
+
+  <div class="form-group">
+    <label>Serial Number Mode</label>
+    <select class="form-control" v-model="serial_number_mode" @change="updateSerialNumber" name="serial_number_mode">
+      <option value="timestamp" default>Timestamp</option>
+      <option value="counter">Counter</option>
+      <option value="manual">Manual</option>
+    </select>
+    <p>
+      <b>Timestamp</b>: Serial number is generated from the current date and time.<br>
+      <b>Counter</b>: The serial number is incremented by one every time there is a change.<br>
+      <b>Manual</b>: You'll be asked to enter in a serial number every time.
+    </p>
+  </div>
+
+  <div class="form-group">
+    <label>Serial Number</label>
+    <input name="serial_number" type="text" class="form-control" v-bind:value="serial_number"/>
+  </div>
+
+  <div class="form-group">
+    <label>Refresh</label>
+    <input type="text" class="form-control" name="refresh" value="86400"/>
+  </div>
+
+  <div class="form-group">
+    <label>Retry</label>
+    <input type="text" class="form-control" name="retry" value="7200"/>
+  </div>
+
+  <div class="form-group">
+    <label>Expire</label>
+    <input type="text" class="form-control" name="expire" value="3600000"/>
+  </div>
+</div>
+</div>
+{% endverbatim %}
+<div class="row">
+  <div class="col-sm-6">
+    <button class="btn btn-primary">{{form.submit}}</button>
+  </div>
+
+
+</form>
