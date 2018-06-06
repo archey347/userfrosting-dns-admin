@@ -30,8 +30,8 @@
       </script>
       <script id="zone-table-column-serial-number" type="text/x-handlebars-template">
         <td>
-          {{row.serial_number}}
-
+          {{row.serial_number}}<br>
+          <b>Mode:</b> {{row.serial_number_mode}}
         </td>
       </script>
       <script id="zone-table-column-domains" type="text/x-handlebars-template">
@@ -61,7 +61,12 @@
                 </a>
               </li>
               <li>
-                <a href="">
+                <a class="js-zone-delete" data-zone="{{row.id}}">
+                  <i class="fa fa-trash"></i> Delete Zone
+                </a>
+              </li>
+              <li>
+                <a class="js-zone-settings" data-zone="{{row.id}}">
                   <i class="fa fa-cogs"></i> Zone Settings
                 </a>
               </li>

@@ -28,7 +28,7 @@ class ZonesTable extends Migration
           $table->integer('ttl');
           $table->string('primary_dns', 500);
           $table->string('admin_domain', 500);
-          $table->integer('serial_number');
+          $table->bigInteger('serial_number');
           $table->string("serial_number_mode", 100);
           $table->integer('refresh');
           $table->integer('retry');

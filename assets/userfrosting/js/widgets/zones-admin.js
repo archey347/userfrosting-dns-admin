@@ -1,3 +1,24 @@
+var ip_examples = [
+  {
+    "start" : "192.168.0.1",
+    "end" : "192.168.0.254",
+    "subnet" : "255.255.255.0 /24",
+    "input" : "192.168.0"
+  },
+  {
+    "start" : "74.0.0.0",
+    "end" : "74.15.254.254",
+    "subnet" : "255.240.0.0 /12",
+    "input" : "74"
+  },
+  {
+    "start": "2001:0db8::1",
+    "end" : " 2001:db8:ffff:ffff:ffff:ffff:ffff:ffff",
+    "subnet" : "/32",
+    "input" : " 2001:db8"
+  }
+];
+
 
 function fInt(num, length) {
     var r = "" + num;
@@ -8,7 +29,49 @@ function fInt(num, length) {
 }
 
 function bindZoneTableButtons(el) {
+    el.find('.js-zone-settings').click(function() {
+      $('body').ufModal({
+        sourceUrl : site.uri.public + '/modals/dnsadmin/edit-zone',
+        ajaxParams : {
+          id : $(this).data('zone')
+        },
+        msgTarget: $('#alerts-page')
+      });
 
+      $('body').on("renderSuccess.ufModal", function (data) {
+        var modal = $(this).ufModal('getModal');
+
+        form = new Vue({
+          el: '#form-zone-edit',
+          data: {
+            "zone_type" : zone.type,
+            "show_examples" : false,
+            "domain" : zone.name,
+            "serial_number_mode" : zone.serial_number_mode,
+            "serial_number" : getTimestamp(),
+            "old_serial_number" : zone.serial_number,
+            ip_examples
+          },
+          methods: {
+            updateSerialNumber: function () {
+                if (this.serial_number_mode == "timestamp") {
+                  this.old_serial_number = this.serial_number
+                  this.serial_number = getTimestamp();
+                } else {
+                  this.serial_number = this.old_serial_number;
+                }
+            }
+          }
+        });
+
+        $('#form-zone-edit').ufForm({
+          msgTarget: $('#form-zone-alerts'),
+          validator: page.validators.editZone
+        }).on("submitSuccess.ufForm", function(event, data, textStatus, jqXHR) {
+          window.location.reload();
+        });
+      });
+    });
 }
 
 function getTimestamp() {
@@ -43,26 +106,7 @@ $(document).ready(function() {
             "domain" : "",
             "serial_number_mode" : "timestamp",
             "serial_number" : getTimestamp(),
-            "ip_examples" : [
-              {
-                "start" : "192.168.0.1",
-                "end" : "192.168.0.254",
-                "subnet" : "255.255.255.0 /24",
-                "input" : "192.168.0"
-              },
-              {
-                "start" : "74.0.0.0",
-                "end" : "74.15.254.254",
-                "subnet" : "255.240.0.0 /12",
-                "input" : "74"
-              },
-              {
-                "start": "2001:0db8::1",
-                "end" : " 2001:db8:ffff:ffff:ffff:ffff:ffff:ffff",
-                "subnet" : "/32",
-                "input" : " 2001:db8"
-              }
-            ]
+            ip_examples
           },
           methods: {
             updateSerialNumber: function () {

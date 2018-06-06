@@ -1,7 +1,7 @@
 <form id="{{form.id}}" class="js-form" method="{{form.method}}" action="{{site.uri.public}}/{{form.action}}">
 
   {% include "forms/csrf.html.twig" %}
-  {% verbatim %}
+
   <div class="js-form-alerts" id="form-zone-alerts">
   </div>
   <div class="row">
@@ -9,9 +9,9 @@
   <div class="form-group">
 
         <label>Zone Type</label>
-        <select v-model="zone_type" class="form-control input-small" name="type">
-          <option value="normal" default>Normal</option>
-          <option value="reverse">Reverse</option>
+        <select v-model="zone_type" class="form-control input-small" {% if form.method == "PUT" %}disabled readonly{%else%} name="type"{%endif%}>
+          <option {%if zone.type == "normal" %}selected{%endif%} value="normal" default>Normal</option>
+          <option {%if zone.type == "reverse" %}selected{%endif%} value="reverse">Reverse</option>
         </select>
 
   </div>
@@ -20,7 +20,7 @@
     <div class="form-group">
       <label>Zone Name</label>
       <p>This is the domain name of the zone. For example, if you wanted to create domain name such as ftp.example.com, then you would type in here example.com.</p>
-      <input v-model="domain" name="name" type="text" class="form-control" placeholder="e.g. example.com">
+      <input v-model="domain" name="name" type="text" class="form-control" placeholder="e.g. example.com" value="{{zone.name}}">
     </div>
   </div>
   <div v-else>
@@ -29,23 +29,23 @@
 
       <p>Put in here <b>just</b> the subnet identifier of the network that you are configuring reverse lookups for.
       </p>
-      <input name="name" type="text" class="form-control" placeholder="e.g. 192.168.0">
+      <input name="name" type="text" class="form-control" placeholder="e.g. 192.168.0" value="{{zone.name}}">
     </div>
   </div>
 
   <div class="form-group">
     <label>TTL</label>
-    <input type="text" class="form-control" name="ttl" value="3600"/>
+    <input type="text" class="form-control" name="ttl" value="3600" value="{{zone.ttl}}"/>
   </div>
 
   <div class="form-group">
     <label>Primary Name Server</label>
-    <input type="text" name="primary_dns" class="form-control" v-bind:placeholder="'e.g. ns1.'+domain" />
+    <input type="text" name="primary_dns" class="form-control" v-bind:placeholder="'e.g. ns1.'+domain" value="{{zone.primary_dns}}"/>
   </div>
 
   <div class="form-group">
     <label>Admin Domain</label>
-    <input type="text" name="admin_domain" class="form-control" v-bind:placeholder="'e.g. root.' + domain" />
+    <input type="text" name="admin_domain" class="form-control" v-bind:placeholder="'e.g. root.' + domain" value="{{zone.admin_domain}}"/>
   </div>
 
 </div>
@@ -53,7 +53,7 @@
 
   <div class="form-group">
     <label>Serial Number Mode</label>
-    <select class="form-control" v-model="serial_number_mode" @change="updateSerialNumber" name="serial_number_mode">
+    <select class="form-control" v-model="serial_number_mode" @change="updateSerialNumber" name="serial_number_mode" value="{{zone.serial_number_mode}}">
       <option value="timestamp" default>Timestamp</option>
       <option value="counter">Counter</option>
       <option value="manual">Manual</option>
@@ -67,30 +67,47 @@
 
   <div class="form-group">
     <label>Serial Number</label>
-    <input name="serial_number" type="text" class="form-control" v-bind:value="serial_number"/>
+    <input name="serial_number" type="text" class="form-control" v-bind:value="serial_number" value="{{zone.serial_number}}"/>
   </div>
 
   <div class="form-group">
     <label>Refresh</label>
-    <input type="text" class="form-control" name="refresh" value="86400"/>
+    <input type="text" class="form-control" name="refresh" value="86400" value="{{zone.refresh}}"/>
   </div>
 
   <div class="form-group">
     <label>Retry</label>
-    <input type="text" class="form-control" name="retry" value="7200"/>
+    <input type="text" class="form-control" name="retry" value="7200" value="{{zone.retry}}"/>
   </div>
 
   <div class="form-group">
     <label>Expire</label>
-    <input type="text" class="form-control" name="expire" value="3600000"/>
+    <input type="text" class="form-control" name="expire" value="3600000" value="{{zone.expiry}}"/>
   </div>
 </div>
 </div>
-{% endverbatim %}
+
 <div class="row">
   <div class="col-sm-6">
-    <button class="btn btn-primary">{{form.submit}}</button>
+    <button type="submit" class="btn btn-primary">{{form.submit}}</button>
   </div>
-
+</div>
 
 </form>
+<script>
+{% if form.method == "PUT" %}
+  zone = {
+    name : '{{zone.name}}',
+    type : '{{zone.type}}',
+    serial_number_mode : '{{zone.serial_number_mode}}',
+    serial_number: {{zone.serial_number}}
+  };
+{% else %}
+  zone = {
+    name : '',
+    type : 'normal',
+    serial_number_mode : 'timestamp',
+    serial_number : 1
+  };
+{% endif %}
+</script>
