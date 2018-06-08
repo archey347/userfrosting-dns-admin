@@ -5,8 +5,9 @@ type:
     member_of:
       values:
         - normal
-        - reverse
-      message: Zone type must either be 'normal' or 'reverse'.
+        - reverse_ipv4
+        - reverse_ipv6
+      message: Zone type must either be 'normal', 'reverse_ipv4' or 'reverse_ipv6'.
 name:
   validators:
     required:

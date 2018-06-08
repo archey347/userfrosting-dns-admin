@@ -40,7 +40,9 @@ class Zone extends Model
      * @var array All of the calculated fields
      */
     protected $appends = [
-      'is_normal'
+      'is_normal',
+      'is_ipv4',
+      'is_ipv6'
     ];
 
 
@@ -56,6 +58,20 @@ class Zone extends Model
      */
     public function getIsNormalAttribute() {
       return $this->type == "normal";
+    }
+
+    /**
+     * @method getIsIpv4Attribute() Checks if the zone is a normal one
+     */
+    public function getIsIpv4Attribute() {
+      return $this->type == "reverse_ipv4";
+    }
+
+    /**
+     * @method getIsIpv6Attribute() Checks if the zone is a normal one
+     */
+    public function getIsIpv6Attribute() {
+      return $this->type == "reverse_ipv6";
     }
 
 }

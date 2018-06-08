@@ -11,7 +11,8 @@
         <label>Zone Type</label>
         <select v-model="zone_type" class="form-control input-small" {% if form.method == "PUT" %}disabled readonly{%else%} name="type"{%endif%}>
           <option {%if zone.type == "normal" %}selected{%endif%} value="normal" default>Normal</option>
-          <option {%if zone.type == "reverse" %}selected{%endif%} value="reverse">Reverse</option>
+          <option {%if zone.type == "reverse_ipv4" %}selected{%endif%} value="reverse_ipv4">Reverse IPv4</option>
+          <option {%if zone.type == "reverse_ipv6" %}selected{%endif%} value="reverse_ipv6">Reverse IPv6</option>
         </select>
 
   </div>
@@ -29,7 +30,7 @@
 
       <p>Put in here <b>just</b> the subnet identifier of the network that you are configuring reverse lookups for.
       </p>
-      <input name="name" type="text" class="form-control" placeholder="e.g. 192.168.0" value="{{zone.name}}">
+      <input name="name" type="text" class="form-control" v-bind:placeholder="zone_type == 'reverse_ipv4' ? 'e.g. 192.168.0' : 'e.g. 2001:0db8:85a3'" value="{{zone.name}}">
     </div>
   </div>
 

@@ -25,7 +25,7 @@
           <h4>
               <a href="{{site.uri.public}}/dnsadmin/zones/z/{{row.id}}">{{row.name}}</a>
           </h4>
-          <b>Type:</b> {{#if row.is_normal }}Normal{{else}}Reverse{{/if}}
+          <b>Type:</b> {{#if row.is_normal }}Normal{{else if row.is_ipv4}}Reverse IPv4{{else}}Reverse IPv6{{/if}}
         </td>
       </script>
       <script id="zone-table-column-serial-number" type="text/x-handlebars-template">
