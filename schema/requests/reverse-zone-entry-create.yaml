@@ -1,0 +1,14 @@
+name:
+type:
+  validators:
+    required:
+      message: Please select which type this entry will be.
+    member_of:
+      values:
+      - PTR
+      - NS
+      message: Only PTR or NS entries are allowed with a reverse zone
+value:
+  validators:
+    required:
+      message: Please enter in the value of the entry

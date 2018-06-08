@@ -11,4 +11,7 @@ $app->group('/modals/dnsadmin', function () use ($app) {
   $app->get('/edit-zone', 'UserFrosting\Sprinkle\Dnsadmin\Controller\AdminController:modalEditZone');
   $app->get('/delete-zone', 'UserFrosting\Sprinkle\Dnsadmin\Controller\AdminController:modalDeleteZone');
 
+  $app->get('/create-zone-entry', 'UserFrosting\Sprinkle\Dnsadmin\Controller\AdminController:modalCreateZoneEntry');
+
+
 });

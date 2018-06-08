@@ -1,0 +1,43 @@
+<form id="{{form.id}}" class="js-form" method="{{form.method}}" action="{{site.uri.public}}/{{form.action}}">
+
+  {% include "forms/csrf.html.twig" %}
+
+  <div class="js-form-alerts" id="form-zone-entry-alerts">
+  </div>
+
+  <div class="form-group">
+    <label>Name</label>
+    <input type="text" name="name" class="form-control" />
+  </div>
+
+  <div class="form-group">
+    <label>Type</label>
+    {% if zone.type == "normal" %}
+    <select class="form-control" name="type">
+      <option value="A">A</option>
+      <option value="AAAA">AAAA</option>
+      <option value="NS">NS</option>
+      <option value="MX">MX</option>
+      <option value="CNAME">CNAME</option>
+    </select>
+    {% else %}
+    <select class="form-control" name="type">
+      <option value="PTR">PTR</option>
+      <option value="NS">NS</option>
+    </select>
+    {% endif %}
+  </div>
+
+  <div class="form-group">
+    <label>Value</label>
+    <input type="text" name="value" class="form-control" />
+  </div>
+
+
+  <div class="row">
+    <div class="col-sm-6">
+      <button type="submit" class="btn btn-primary">{{form.submit}}</button>
+    </div>
+  </div>
+
+</form>

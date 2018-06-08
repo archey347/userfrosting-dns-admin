@@ -60,24 +60,28 @@ class AdminController extends SimpleController
     */
   public function pageZoneEntriesAdmin(Request $request, Response $response, $args)
   {
-    /*// Get the zone create validation rules
-    $schema_create = new RequestSchema('schema://requests/zone-create.yaml');
-    $validator_create = new JqueryValidationAdapter($schema_create, $this->ci->translator);
-
-    // Get the zone edit validation rules
-    $schema_edit = new RequestSchema('schema://requests/zone-edit.yaml');
-    $validator_edit = new JqueryValidationAdapter($schema_edit, $this->ci->translator);
-    */
-
     $zone = Zone::find($args['id']);
 
     if(!$zone) {
       return NotFoundException($request, $response);
     }
 
+    $schema_create = new RequestSchema('schema://requests/'.$zone->type.'-zone-entry-create.yaml');
+    $validator_create = new JqueryValidationAdapter($schema_create, $this->ci->translator);
+
+    // Get the zone edit validation rules
+    //$schema_edit = new RequestSchema('schema://requests/zone-edit.yaml');
+    //$validator_edit = new JqueryValidationAdapter($schema_edit, $this->ci->translator);
+
+
+
     return $this->ci->view->render($response, 'pages/dnsadmin-zone-entries.html.twig', [
       'page' => [
-        'zone' => $zone->toArray()
+        'zone' => $zone->toArray(),
+        'validators' => [
+          'createEntry' => $validator_create->rules()
+        ]
+
       ]
     ]);
   }
@@ -170,6 +174,39 @@ class AdminController extends SimpleController
         "action" => "api/dns/zones/z/" . $zone_id
       ],
       "zone" => $zone->toArray()
+    ]);
+  }
+
+  /**
+    * Generates the modal form for creating a zone
+    *
+    * @param Request $request
+    * @param Response $response
+    * @param array $args
+    * @return Response
+    */
+  public function modalCreateZoneEntry(Request $request, Response $response, $args)
+  {
+    $ms = $this->ci->alerts;
+
+    $zone_id = $request->getQueryParam('id');
+    $zone = Zone::find($zone_id);
+
+    if(!$zone) {
+      $ms->addMessage('danger', 'Invalid Zone ID.');
+      return $response->withStatus(400);
+    }
+
+    $zone = $zone->toArray();
+
+    return $this->ci->view->render($response, 'modals/zone-entry.html.twig', [
+      "form" => [
+        "id" => "form-zone-entry-create",
+        "method" => "POST",
+        "action" => "api/dns/zones/z/$zone_id/entries",
+        "submit" => "Create Zone Entry"
+      ],
+      "zone" => $zone
     ]);
   }
 

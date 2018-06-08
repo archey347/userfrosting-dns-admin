@@ -16,6 +16,7 @@ use UserFrosting\Fortress\RequestDataTransformer;
 use UserFrosting\Fortress\RequestSchema;
 use UserFrosting\Fortress\ServerSideValidator;
 use UserFrosting\Sprinkle\Dnsadmin\Database\Models\Zone;
+use UserFrosting\Sprinkle\Dnsadmin\Database\Models\ZoneEntry;
 use Illuminate\Database\Capsule\Manager as Capsule;
 
 
@@ -248,5 +249,53 @@ class ApiController extends SimpleController
     $sprunje = new ZoneEntriesSprunje($classMapper, $params, $zone->id);
 
     return $sprunje->toResponse($response);
+  }
+
+  /**
+    * Creates a Zone Entry and associates it with a zone
+    * Method Type: GET
+    *
+    * @param Request $request
+    * @param Response $response
+    * @param array $args
+    * @return void
+    */
+  public function createZoneEntry(Request $request, Response $response, $args)
+  {
+    $ms = $this->ci->alerts;
+
+    $zone = Zone::find($args['id']);
+
+    if(!$zone) {
+      $ms->addMessage('danger', 'Zone Not Found.');
+      return $response->withStatus(404);
+    }
+
+    $params = $request->getParsedBody();
+
+    // Start off by checking to make sure that the zone type is correct
+    $schema = new RequestSchema('schema://requests/'.$zone->type.'-zone-entry-create.yaml');
+
+    $transformer = new RequestDataTransformer($schema);
+    $data = $transformer->transform($params);
+
+    $ms = $this->ci->alerts;
+
+    $validator = new ServerSideValidator($schema, $this->ci->translator);
+
+    if(!$validator->validate($data)) {
+      $ms->addValidationErrors($validator);
+      return $response->withStatus(400);
+    }
+
+    Capsule::transaction(function () use ($data, $zone) {
+      $entry = new ZoneEntry($data);
+
+      $zone->entries()->save($entry);
+    });
+
+    $ms->addMessage('success', 'Successfully added the entry.');
+
+
   }
 }
