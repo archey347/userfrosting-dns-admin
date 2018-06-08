@@ -17,12 +17,17 @@ $(document).ready(function() {
     });
 
     $('body').on("renderSuccess.ufModal", function (data) {
+
       $('#form-zone-entry-create').ufForm({
         msgTarget: $('#form-zone-entry-alerts'),
         validator: page.validators.createEntry
       }).on("submitSuccess.ufForm", function(event, data, textStatus, jqXHR) {
         window.location.reload();
       });
+
+      onEntryTypeChange();
     });
   });
 });
+
+function onEntryTypeChange() { if (this.value == 'NS') { $('#zone_caption').hide(); } else { $('#zone_caption').show(); } }
