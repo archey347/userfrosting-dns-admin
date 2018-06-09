@@ -18,4 +18,11 @@ class ZoneEntry extends Model
         'name',
         'value'
     ];
+
+    /**
+     * @method zone() Gets the parent zone
+     */
+    public function zone() {
+      return $this->belongsTo('UserFrosting\Sprinkle\Dnsadmin\Database\Models\Zone');
+    }
 }

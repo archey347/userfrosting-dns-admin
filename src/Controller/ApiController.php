@@ -273,8 +273,9 @@ class ApiController extends SimpleController
 
     $params = $request->getParsedBody();
 
-    // Start off by checking to make sure that the zone type is correct
-    $schema = new RequestSchema('schema://requests/'.$zone->type.'-zone-entry-create.yaml');
+    $zone_type = $zone->type == "normal" ? "normal" : "reverse";
+
+    $schema = new RequestSchema('schema://requests/'.$zone_type.'-zone-entry-create.yaml');
 
     $transformer = new RequestDataTransformer($schema);
     $data = $transformer->transform($params);
@@ -295,6 +296,62 @@ class ApiController extends SimpleController
     });
 
     $ms->addMessage('success', 'Successfully added the entry.');
+
+
+  }
+
+  /**
+    * Edits a Zone Entry
+    * Method Type: GET
+    *
+    * @param Request $request
+    * @param Response $response
+    * @param array $args
+    * @return void
+    */
+  public function editZoneEntry(Request $request, Response $response, $args)
+  {
+    $ms = $this->ci->alerts;
+
+    $zone = Zone::find($args['zone_id']);
+
+    if(!$zone) {
+      $ms->addMessage('danger', 'Zone Not Found.');
+      return $response->withStatus(404);
+    }
+
+    $entry = $zone->entries()->find($args['entry_id']);
+
+    if(!$entry) {
+      $ms->addMessage('danger', 'Zone Entry Not Found.');
+      return $response->withStatus(404);
+    }
+
+    $params = $request->getParsedBody();
+
+    $zone_type = $zone->type == "normal" ? "normal" : "reverse";
+
+    $schema = new RequestSchema('schema://requests/'.$zone_type.'-zone-entry-edit.yaml');
+
+    $transformer = new RequestDataTransformer($schema);
+    $data = $transformer->transform($params);
+
+    $ms = $this->ci->alerts;
+
+    $validator = new ServerSideValidator($schema, $this->ci->translator);
+
+    if(!$validator->validate($data)) {
+      $ms->addValidationErrors($validator);
+      return $response->withStatus(400);
+    }
+
+    Capsule::transaction(function () use ($data, $entry) {
+      $entry->fill($data);
+
+      $entry->save();
+    });
+
+    $ms->addMessage('success', 'Successfully updated the entry.');
 
 
   }
