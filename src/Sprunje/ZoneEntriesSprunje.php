@@ -27,7 +27,9 @@ class ZoneEntriesSprunje extends Sprunje
    */
   protected $sortable = [
       'name',
-      'type'
+      'type',
+      'value',
+      'updated_at'
   ];
 
   /**

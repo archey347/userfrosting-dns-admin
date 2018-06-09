@@ -66,7 +66,7 @@ function bindZoneTableButtons(el) {
 
         $('#form-zone-edit').ufForm({
           msgTarget: $('#form-zone-alerts'),
-          validator: page.validators.editZone
+          validators: page.validators.editZone
         }).on("submitSuccess.ufForm", function(event, data, textStatus, jqXHR) {
           window.location.reload();
         });
@@ -139,7 +139,7 @@ $(document).ready(function() {
 
         $('#form-zone-create').ufForm({
           msgTarget: $('#form-zone-alerts'),
-          validator: page.validators.createZone
+          validators: page.validators.createZone
         }).on("submitSuccess.ufForm", function(event, data, textStatus, jqXHR) {
           window.location.reload();
         });

@@ -19,7 +19,7 @@ function bindZoneEntryTableButtons(el) {
     $('body').on("renderSuccess.ufModal", function (data) {
       $("#form-zone-entry-edit").ufForm({
         msgTarget : $('#form-zone-entry-alerts'),
-        validator : page.validators.editEntry
+        validators : page.validators.editEntry
       }).on("submitSuccess.ufForm", function(event, data, textStatus, jqXHR) {
         window.location.reload();
       });
@@ -52,7 +52,7 @@ $(document).ready(function() {
 
       $('#form-zone-entry-create').ufForm({
         msgTarget: $('#form-zone-entry-alerts'),
-        validator: page.validators.createEntry
+        validators: page.validators.createEntry
       }).on("submitSuccess.ufForm", function(event, data, textStatus, jqXHR) {
         window.location.reload();
       });
