@@ -250,6 +250,38 @@ class AdminController extends SimpleController
   }
 
   /**
+    * Generates the modal form for deleting a zone entry
+    *
+    * @param Request $request
+    * @param Response $response
+    * @param array $args
+    * @return Response
+    */
+  public function modalDeleteZoneEntry(Request $request, Response $response, $args)
+  {
+    $ms = $this->ci->alerts;
+
+    $zone_entry_id = $request->getQueryParam('id');
+    $zone_entry = ZoneEntry::find($zone_entry_id);
+
+    if(!$zone_entry) {
+      $ms->addMessage('danger', 'Invalid Zone Entry ID.');
+      return $response->withStatus(400);
+    }
+
+    $zone = $zone_entry->zone()->first();
+
+    return $this->ci->view->render($response, 'modals/zone-entry-delete.html.twig', [
+      "form" => [
+        "action" => "api/dns/zones/z/" . $zone['id'] . "/entries/e/" . $zone_entry_id,
+      ],
+      "zone" => $zone->toArray(),
+      "entry" => $zone_entry->toArray(),
+      "entry_types" => $this->getEntryTypes($zone->type)
+    ]);
+  }
+
+  /**
     * Generates all of the Entry Types available for a specific zone.
     *
     * @param string $zone_type

@@ -355,4 +355,40 @@ class ApiController extends SimpleController
 
 
   }
+
+  /**
+    * Deletes a Zone Entry
+    * Method Type: GET
+    *
+    * @param Request $request
+    * @param Response $response
+    * @param array $args
+    * @return void
+    */
+  public function deleteZoneEntry(Request $request, Response $response, $args)
+  {
+    $ms = $this->ci->alerts;
+
+    $zone = Zone::find($args['zone_id']);
+
+    if(!$zone) {
+      $ms->addMessage('danger', 'Zone Not Found.');
+      return $response->withStatus(404);
+    }
+
+    $entry = $zone->entries()->find($args['entry_id']);
+
+    if(!$entry) {
+      $ms->addMessage('danger', 'Zone Entry Not Found.');
+      return $response->withStatus(404);
+    }
+
+    Capsule::transaction(function () use ($data, $entry) {
+      $entry->delete();
+    });
+
+    $ms->addMessage('success', 'Successfully deleted the entry.');
+
+
+  }
 }
