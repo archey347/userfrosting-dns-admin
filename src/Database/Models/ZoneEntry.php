@@ -13,6 +13,9 @@ class ZoneEntry extends Model
      */
     protected $table = 'zone_entries';
 
+    /**
+     * @var array Fields that are fillable
+     */
     protected $fillable = [
         'type',
         'name',

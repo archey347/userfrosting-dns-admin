@@ -21,7 +21,7 @@ class Zone extends Model
     protected $table = 'zones';
 
     /**
-     * @var array The fieds which are writeable?
+     * @var array The fieds which are fillable
      */
     protected $fillable = [
         'type',
