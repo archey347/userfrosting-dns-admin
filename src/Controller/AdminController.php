@@ -84,7 +84,6 @@ class AdminController extends SimpleController
           'createEntry' => $validator_create->rules(),
           'editEntry' => $validator_edit->rules()
         ]
-
       ]
     ]);
   }
@@ -298,5 +297,37 @@ class AdminController extends SimpleController
     return $result;
   }
 
+  /**
+    * Generates the modal form for deleting a zone entry
+    *
+    * @param Request $request
+    * @param Response $response
+    * @param array $args
+    * @return Response
+    */
+  public function modalExportZoneEntry(Request $request, Response $response, $args)
+  {
+    $ms = $this->ci->alerts;
+
+    $zone_id = $request->getQueryParam('id');
+    $zone = Zone::find($zone_id);
+
+    if(!$zone) {
+      $ms->addMessage('danger', 'Invalid Zone ID.');
+      return $response->withStatus(400);
+    }
+
+    $dnsConfigGenerator = $this->ci->dnsConfigGenerator;
+
+    $config = $dnsConfigGenerator->getZoneConfig($zone);
+
+    $zone = $zone->toArray();
+
+    $zone['config'] = $config;
+
+    return $this->ci->view->render($response, 'modals/zone-export.html.twig', [
+      "zone" => $zone
+    ]);
+  }
 
 }

@@ -6,6 +6,9 @@ $app->group('/api/dns', function () use ($app) {
   $app->put('/zones/z/{id}', 'UserFrosting\Sprinkle\Dnsadmin\Controller\ApiController:editZone');
   $app->delete('/zones/z/{id}', 'UserFrosting\Sprinkle\Dnsadmin\Controller\ApiController:deleteZone');
 
+  $app->put('/zones/z/{id}/configuration', 'UserFrosting\Sprinkle\Dnsadmin\Controller\ApiController:saveConfiguration');
+
+
   $app->get('/zones/z/{id}/entries', 'UserFrosting\Sprinkle\Dnsadmin\Controller\ApiController:getZoneEntries');
   $app->post('/zones/z/{id}/entries', 'UserFrosting\Sprinkle\Dnsadmin\Controller\ApiController:createZoneEntry');
   $app->put('/zones/z/{zone_id}/entries/e/{entry_id}', 'UserFrosting\Sprinkle\Dnsadmin\Controller\ApiController:editZoneEntry');

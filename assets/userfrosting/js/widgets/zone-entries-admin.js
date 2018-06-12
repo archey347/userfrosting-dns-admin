@@ -76,4 +76,25 @@ $(document).ready(function() {
       onEntryTypeChange();
     });
   });
+
+  $('#btn-export-zone').click(function () {
+    $('body').ufModal({
+      sourceUrl : site.uri.public + '/modals/dnsadmin/export-zone',
+      ajaxParams : {
+        id : page.zone.id
+      },
+      msgTarget : $('#alerts-page')
+    });
+
+    $('body').on("renderSuccess.ufModal", function (data) {
+
+      $('#form-export-zone').ufForm({
+        msgTarget: $('#form-export-zone-alerts'),
+      }).on("submitSuccess.ufForm", function(event, data, textStatus, jqXHR) {
+        window.location.reload();
+      });
+
+
+    });
+  });
 });

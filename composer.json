@@ -9,7 +9,8 @@
     }
   ],
   "require" : {
-      "badcow/dns" : "~v0.19"
+      "badcow/dns" : "~v0.19",
+      "league/flysystem" : "~1.0.45"
   },
 
   "extra": {

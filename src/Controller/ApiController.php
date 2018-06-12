@@ -388,7 +388,33 @@ class ApiController extends SimpleController
     });
 
     $ms->addMessage('success', 'Successfully deleted the entry.');
-
-
   }
+
+  /**
+    * Saves the Zone Configuration
+    * Method Type: GET
+    *
+    * @param Request $request
+    * @param Response $response
+    * @param array $args
+    * @return void
+    */
+  public function saveConfiguration(Request $request, Response $response, $args)
+  {
+    $ms = $this->ci->alerts;
+
+    $zone = Zone::find($args['id']);
+
+    if(!$zone) {
+      $ms->addMessage('danger', 'Zone Not Found.');
+      return $response->withStatus(404);
+    }
+
+    $dnsConfigGenerator = $this->ci->dnsConfigGenerator;
+
+    $dnsConfigGenerator->saveZone($zone);
+
+    $ms->addMessage('Success', "Zone file was successfully saved");
+  }
+
 }
