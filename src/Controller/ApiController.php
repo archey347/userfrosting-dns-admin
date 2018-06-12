@@ -115,7 +115,7 @@ class ApiController extends SimpleController
         $zone->refresh = $data['refresh'];
         $zone->retry = $data['retry'];
         $zone->expiry = $data['expire'];
-
+        $zone->minimum = $data['minimum'];
         $zone->save();
       });
 
@@ -181,6 +181,7 @@ class ApiController extends SimpleController
         $zone->refresh = $data['refresh'];
         $zone->retry = $data['retry'];
         $zone->expiry = $data['expire'];
+        $zone->minimum = $data['minimum'];
 
         $zone->save();
       });

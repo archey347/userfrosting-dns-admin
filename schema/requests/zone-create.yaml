@@ -60,3 +60,9 @@ expire:
       message: Please enter in an expire value.
     numeric:
       message: The expire value must be a number.
+minimum:
+  validators:
+    required:
+      message: Please enter in the minimum value.
+    numeric:
+      message: The minimum value must be a number.

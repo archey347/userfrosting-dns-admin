@@ -33,7 +33,8 @@ class Zone extends Model
         'serial_number_mode',
         'refresh',
         'retry',
-        'expiry'
+        'expiry',
+        'minimum'
     ];
 
     /**

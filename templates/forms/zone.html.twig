@@ -85,6 +85,10 @@
     <label>Expire</label>
     <input type="text" class="form-control" name="expire" value="3600000" value="{{zone.expiry}}"/>
   </div>
+  <div class="form-group">
+    <label>Minimum</label>
+    <input type="text" class="form-control" name="minimum" value="{% if zone.minimum is defined %}{{zone.minimum}}{% else %}3600{% endif %}"/>
+  </div>
 </div>
 </div>
 

@@ -33,6 +33,7 @@ class ZonesTable extends Migration
           $table->integer('refresh');
           $table->integer('retry');
           $table->integer('expiry');
+          $table->integer('minimum');
 
           $table->timestamps();
 

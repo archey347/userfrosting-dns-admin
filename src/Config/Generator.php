@@ -56,7 +56,7 @@ class Generator
         $zone->refresh,
         $zone->retry,
         $zone->expiry,
-        3600
+        $zone->minimum
       ),
       null,
       Classes::INTERNET
