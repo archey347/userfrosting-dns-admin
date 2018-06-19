@@ -1,0 +1,118 @@
+<form id="{{form.id}}" class="js-form" method="{{form.method}}" action="{{site.uri.public}}/{{form.action}}">
+
+  {% include "forms/csrf.html.twig" %}
+
+  <div class="js-form-alerts" id="form-zone-alerts">
+  </div>
+  <div class="row">
+  <div class="col-sm-6">
+  <div class="form-group">
+
+        <label>Zone Type</label>
+        <select v-model="zone_type" class="form-control input-small" {% if form.method == "PUT" %}disabled readonly{%else%} name="type"{%endif%}>
+          <option {%if zone.type == "normal" %}selected{%endif%} value="normal" default>Normal</option>
+          <option {%if zone.type == "reverse_ipv4" %}selected{%endif%} value="reverse_ipv4">Reverse IPv4</option>
+          <option {%if zone.type == "reverse_ipv6" %}selected{%endif%} value="reverse_ipv6">Reverse IPv6</option>
+        </select>
+
+  </div>
+
+  <div v-if="zone_type == 'normal'">
+    <div class="form-group">
+      <label>Zone Name</label>
+      <p>This is the domain name of the zone. For example, if you wanted to create domain name such as ftp.example.com, then you would type in here example.com.</p>
+      <input v-model="domain" name="name" type="text" class="form-control" placeholder="e.g. example.com" value="{{zone.name}}">
+    </div>
+  </div>
+  <div v-else>
+    <div class="form-group">
+      <label>IP Address Range</label>
+
+      <p>Put in here <b>just</b> the subnet identifier of the network that you are configuring reverse lookups for.
+      </p>
+      <input name="name" type="text" class="form-control" v-bind:placeholder="zone_type == 'reverse_ipv4' ? 'e.g. 192.168.0' : 'e.g. 2001:0db8:85a3'" value="{{zone.name}}">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label>TTL</label>
+    <input type="text" class="form-control" name="ttl" value="3600" value="{{zone.ttl}}"/>
+  </div>
+
+  <div class="form-group">
+    <label>Primary Name Server</label>
+    <input type="text" name="primary_dns" class="form-control" v-bind:placeholder="'e.g. ns1.'+domain" value="{{zone.primary_dns}}"/>
+  </div>
+
+  <div class="form-group">
+    <label>Admin Domain</label>
+    <input type="text" name="admin_domain" class="form-control" v-bind:placeholder="'e.g. root.' + domain" value="{{zone.admin_domain}}"/>
+  </div>
+
+</div>
+<div class="col-sm-6">
+
+  <div class="form-group">
+    <label>Serial Number Mode</label>
+    <select class="form-control" v-model="serial_number_mode" @change="updateSerialNumber" name="serial_number_mode" value="{{zone.serial_number_mode}}">
+      <option value="timestamp" default>Timestamp</option>
+      <option value="counter">Counter</option>
+      <option value="manual">Manual</option>
+    </select>
+    <p>
+      <b>Timestamp</b>: Serial number is generated from the current date and time.<br>
+      <b>Counter</b>: The serial number is incremented by one every time there is a change.<br>
+      <b>Manual</b>: You'll be asked to enter in a serial number every time.
+    </p>
+  </div>
+
+  <div class="form-group">
+    <label>Serial Number</label>
+    <input name="serial_number" type="text" class="form-control" v-bind:value="serial_number" value="{{zone.serial_number}}"/>
+  </div>
+
+  <div class="form-group">
+    <label>Refresh</label>
+    <input type="text" class="form-control" name="refresh" value="86400" value="{{zone.refresh}}"/>
+  </div>
+
+  <div class="form-group">
+    <label>Retry</label>
+    <input type="text" class="form-control" name="retry" value="7200" value="{{zone.retry}}"/>
+  </div>
+
+  <div class="form-group">
+    <label>Expire</label>
+    <input type="text" class="form-control" name="expire" value="3600000" value="{{zone.expiry}}"/>
+  </div>
+  <div class="form-group">
+    <label>Minimum</label>
+    <input type="text" class="form-control" name="minimum" value="{% if zone.minimum is defined %}{{zone.minimum}}{% else %}3600{% endif %}"/>
+  </div>
+</div>
+</div>
+
+<div class="row">
+  <div class="col-sm-6">
+    <button type="submit" class="btn btn-primary">{{form.submit}}</button>
+  </div>
+</div>
+
+</form>
+<script>
+{% if form.method == "PUT" %}
+  zone = {
+    name : '{{zone.name}}',
+    type : '{{zone.type}}',
+    serial_number_mode : '{{zone.serial_number_mode}}',
+    serial_number: {{zone.serial_number}}
+  };
+{% else %}
+  zone = {
+    name : '',
+    type : 'normal',
+    serial_number_mode : 'timestamp',
+    serial_number : 1
+  };
+{% endif %}
+</script>

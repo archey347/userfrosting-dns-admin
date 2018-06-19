@@ -1,0 +1,28 @@
+{
+  "bundle": {
+    "js/pages/zones-admin": {
+      "scripts": [
+        "userfrosting/js/widgets/zones-admin.js"
+      ],
+      "options": {
+        "result": {
+          "type": {
+            "scripts": "plain"
+          }
+        }
+      }
+    },
+    "js/pages/zone-entries-admin": {
+      "scripts": [
+        "userfrosting/js/widgets/zone-entries-admin.js"
+      ],
+      "options": {
+        "result": {
+          "type": {
+            "scripts": "plain"
+          }
+        }
+      }
+    }
+  }
+}

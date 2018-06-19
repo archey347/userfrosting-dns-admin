@@ -1,0 +1,100 @@
+{% extends "tables/table-paginated.html.twig" %}
+
+{% block table %}
+  <table id="{{table.id}}" class="tablesorter table table-bordered table-hover table-striped" data-sortlist="{{table.sortlist}}">
+    <thead>
+     <th class="sorter-metatext" data-column-name="name" data-column-template="#zone-table-column-info" data-priority="1">Zone Name</th>
+     <th class="sorter-metatext" data-column-name="enabled" data-column-template="#zone-table-column-status" data-priority="1">Status</th>
+     <th class="sorter-metatext" data-column-name="primary_dns" data-column-template="#zone-table-column-serial-number" data-priority="1">Serial Number</th>
+     <th class="sorter-metatext" data-column-name="admin_domain" data-column-template="#zone-table-column-domains" data-priority="1">Domains</th>
+     <th class="sorter-metatext" data-column-template="#zone-table-column-details" data-priority="1">Details</th>
+     <th class="" data-column-name="actions" data-column-template="#zone-table-column-actions" data-priority="1">Actions</th>
+
+
+     <!--<th class="sorter-metanum" data-column-name="amount_of_entries" data-column-template="#zone-table-column-amount-of-Entries" data-priority="2">Amount Of Entries</th>
+     <th class="sorter-metatext" data-column-template="#zone-table-column-actions" data-priority="1">Actions</th>-->
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+{% endblock %}
+
+{% block table_cell_templates %}
+    {% verbatim %}
+      <script id="zone-table-column-info" type="text/x-handlebars-template">
+        <td data-text="{{row.name}}">
+          <h4>
+              <a href="{{site.uri.public}}/dnsadmin/zones/z/{{row.id}}">{{row.name}}</a>
+          </h4>
+          <b>Type:</b> {{#if row.is_normal }}Normal{{else if row.is_ipv4}}Reverse IPv4{{else}}Reverse IPv6{{/if}}
+        </td>
+      </script>
+      <script id="zone-table-column-status" type="text/x-handlebars-template">
+        <td data-text="{{row.enabled}}">
+          <form class="js-status" action="{% endverbatim %}{{site.uri.public}}{% verbatim %}/api/dns/zones/z/{{row.id}}/status" method="PUT">
+            {% endverbatim %}{% include "forms/csrf.html.twig" %}{% verbatim %}
+            {{#if row.enabled }}
+            <span class="js-status-caption" style="color: green; margin-bottom: 10px; display: inline-block; font-weight: bold;">Enabled</span>
+            {{else}}
+            <span class="js-status-caption" style="color: red; margin-bottom: 10px; display: inline-block; font-weight: bold;">Disabled</span>
+            {{/if}}
+            <div class="js-status-button">
+            {{#if row.enabled }}
+              <button class="btn btn-danger" name="status" value="disable" type="submit">Disable</button>
+            {{else}}
+              <button class="btn btn-primary" name="status" value="enable" type="submit">Enable</button>
+            {{/if}}
+          </div>
+          </form>
+        </td>
+      </script>
+      <script id="zone-table-column-serial-number" type="text/x-handlebars-template">
+        <td>
+          {{row.serial_number}}<br>
+          <b>Mode:</b> {{row.serial_number_mode}}
+        </td>
+      </script>
+      <script id="zone-table-column-domains" type="text/x-handlebars-template">
+        <td data-text="{{row.admin_domain}}">
+          <b>Primary Nameserver:</b> {{row.primary_dns}}<br>
+          <b>Admin Domain:</b> {{row.admin_domain}}
+        </td>
+      </script>
+      <script id="zone-table-column-details" type="text/x-handlebars-template">
+        <td>
+          <b>Refresh:</b> {{row.refresh}}<br>
+          <b>Retry: </b>{{row.retry}}<br>
+          <b>Expiry: </b>{{row.expiry}}<br>
+          <b>Minimum: </b>{{row.minimum}}
+        </td>
+      </script>
+      <script id="zone-table-column-actions" type="text/x-handlebars-template">
+        <td data-text="{{row.admin_domain}}">
+          <div class="btn-group">
+            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+              Actions
+              <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-right" role="menu">
+              <li>
+                <a href="{{site.uri.public}}/dnsadmin/zones/z/{{row.id}}">
+                  <i class="fa fa-columns"></i> Manage Entries
+                </a>
+              </li>
+              <li>
+                <a class="js-zone-delete" data-zone="{{row.id}}">
+                  <i class="fa fa-trash"></i> Delete Zone
+                </a>
+              </li>
+              <li>
+                <a class="js-zone-settings" data-zone="{{row.id}}">
+                  <i class="fa fa-cogs"></i> Zone Settings
+                </a>
+              </li>
+            </ul>
+          </div>
+
+        </td>
+      </script>
+    {% endverbatim %}
+{% endblock %}

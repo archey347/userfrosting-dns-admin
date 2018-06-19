@@ -1,0 +1,69 @@
+{% extends "tables/table-paginated.html.twig" %}
+
+{% block table %}
+  <table id="{{table.id}}" class="tablesorter table table-bordered table-hover table-striped" data-sortlist="{{table.sortlist}}">
+    <thead>
+     <th class="sorter-metatext" data-column-name="name" data-column-template="#zone-entry-table-column-name" data-priority="1">Name</th>
+     <th class="sorter-metatext" data-column-name="type" data-column-template="#zone-entry-table-column-type" data-priority="1">Type</th>
+
+     <th class="sorter-metatext" data-column-name="value" data-column-template="#zone-entry-table-column-value" data-priority="1">Value</th>
+     <th class="sorter-metatext" data-column-name="updated_at" data-column-template="#zone-entry-table-column-updated-at" data-priority="3">Updated At</th>
+     <th class="" data-column-name="actions" data-column-template="#zone-entry-table-column-actions" data-priority="1">Actions</th>
+
+
+     <!--<th class="sorter-metanum" data-column-name="amount_of_entries" data-column-template="#zone-table-column-amount-of-Entries" data-priority="2">Amount Of Entries</th>
+     <th class="sorter-metatext" data-column-template="#zone-table-column-actions" data-priority="1">Actions</th>-->
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+{% endblock %}
+
+{% block table_cell_templates %}
+    {% verbatim %}
+      <script id="zone-entry-table-column-type" type="text/x-handlebars-template">
+        <td data-text="{{row.type}}">
+          {{row.type}}
+        </td>
+      </script>
+      <script id="zone-entry-table-column-name" type="text/x-handlebars-template">
+        <td data-text="{{row.name}}">
+          {{row.name}}
+        </td>
+      </script>
+      <script id="zone-entry-table-column-value" type="text/x-handlebars-template">
+        <td data-text="{{row.value}}">
+          {{row.value}}
+        </td>
+      </script>
+      <script id="zone-entry-table-column-updated-at" type="text/x-handlebars-template">
+        <td data-text="{{row.updated_at}}">
+          {{dateFormat row.updated_at format="MMM Do, YYYY h:mm a"}}
+        </td>
+      </script>
+
+      <script id="zone-entry-table-column-actions" type="text/x-handlebars-template">
+        <td data-text="{{row.admin_domain}}">
+          <div class="btn-group">
+            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+              Actions
+              <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-right" role="menu">
+              <li>
+                <a class="js-zone-entry-edit" data-zone-entry="{{row.id}}">
+                  <i class="fa fa-cogs"></i> Edit
+                </a>
+              </li>
+              <li>
+                <a class="js-zone-entry-delete" data-zone-entry="{{row.id}}">
+                  <i class="fa fa-trash"></i> Delete
+                </a>
+              </li>
+            </ul>
+          </div>
+
+        </td>
+      </script>
+    {% endverbatim %}
+{% endblock %}

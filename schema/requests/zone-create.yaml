@@ -1,0 +1,68 @@
+type:
+  validators:
+    required:
+      message: Please select a zone type.
+    member_of:
+      values:
+        - normal
+        - reverse_ipv4
+        - reverse_ipv6
+      message: Zone type must either be 'normal', 'reverse_ipv4' or 'reverse_ipv6'.
+name:
+  validators:
+    required:
+      message: Please enter the zone name.
+ttl:
+  validators:
+    required:
+      message: Please enter in the TTL.
+    numeric:
+      message: The TTL value must be a number.
+primary_dns:
+  validators:
+    required:
+      message: Please enter in the name of the primary DNS server.
+admin_domain:
+  validators:
+    required:
+      message: Please enter in the name of the admin domain.
+serial_number_mode:
+  validators:
+    required:
+      message: Please select the serial number mode.
+    member_of:
+      values:
+        - counter
+        - timestamp
+        - manual
+      message: The serial number mode must either be 'counter', 'timestamp', 'manual'.
+serial_number:
+  validators:
+    required:
+      message: Please enter in a serial number or select a different serial number mode.
+    numeric:
+      message: The serial number must be a number.
+refresh:
+  validators:
+    required:
+      message: Please enter in a refresh value.
+    numeric:
+      message: The refresh value must be a number.
+retry:
+  validators:
+    required:
+      message: Please enter in a retry value.
+    numeric:
+      message: The retry value must be a number.
+expire:
+  validators:
+    required:
+      message: Please enter in an expire value.
+    numeric:
+      message: The expire value must be a number.
+minimum:
+  validators:
+    required:
+      message: Please enter in the minimum value.
+    numeric:
+      message: The minimum value must be a number.

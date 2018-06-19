@@ -1,0 +1,22 @@
+{% extends "modals/modal.html.twig" %}
+
+{% block modal_title %}Zone Export{% endblock %}
+
+{% block modal_body %}
+<form id="form-export-zone" action="{{site.uri.public}}/api/dns/zones/z/{{zone.id}}/configuration" method="PUT">
+  {% include "forms/csrf.html.twig" %}
+  <div class="js-form-alerts" id="form-export-zone-alerts">
+  </div>
+  <div class="form-group">
+    <label>Configuration Preview</label>
+    <textarea class="form-control" rows="20" disabled>
+{{zone.config}}
+    </textarea>
+  </div>
+  <div class="btn-group-action">
+      <button type="submit" class="btn btn-primary btn-lg btn-block">Export</button>
+      <button type="button" class="btn btn-default btn-lg btn-block" data-dismiss="modal">{{translate("CANCEL")}}</button>
+  </div>
+</form>
+
+{% endblock %}

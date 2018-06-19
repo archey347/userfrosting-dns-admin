@@ -1,0 +1,45 @@
+<form id="{{form.id}}" class="js-form" method="{{form.method}}" action="{{site.uri.public}}/{{form.action}}">
+
+  {% include "forms/csrf.html.twig" %}
+
+  <div class="js-form-alerts" id="form-zone-entry-alerts">
+  </div>
+
+  <div class="form-group">
+    <label>Name</label>
+    <div class="input-group">
+      {% if zone.type == "reverse_ipv4" %}
+      <span class="input-group-addon" id="zone_caption">{{zone.name}}.</span>
+      {% elseif zone.type == "reverse_ipv6" %}
+      <span class="input-group-addon" id="zone_caption">{{zone.name}}:</span>
+      {% endif %}
+      <input type="text" name="name" class="form-control" aria-describedby="zone_caption" value="{{entry.name}}"/>
+      {% if zone.type == "normal" %}
+      <span class="input-group-addon" id="zone_caption">.{{zone.name}}</span>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label>Type</label>
+
+    <select class="form-control" name="type" onchange="onEntryTypeChange();" value="{{entry.type}}">
+      {% for entry_type in entry_types %}
+      <option value="{{entry_type}}" {% if entry_type == entry.type %}selected{% endif %}>{{entry_type}}</option>
+      {% endfor %}
+    </select>
+
+  </div>
+
+  <div class="form-group">
+    <label>Value</label>
+    <input type="text" name="value" class="form-control" value="{{entry.value}}"/>
+  </div>
+
+
+  <div class="form-group">
+    <button type="submit" class="btn btn-primary">{{form.submit}}</button>
+  </div>
+
+
+</form>
