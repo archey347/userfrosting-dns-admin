@@ -16,6 +16,8 @@ use Badcow\DNS\Ip\Toolbox;
 use Badcow\DNS\Classes;
 use League\Flysystem\Filesystem;
 use League\Flysystem\Adapter\Local;
+use Symfony\Component\Process\Process;
+use Symfony\Component\Process\Exception\ProcessFailedException;
 /**
   * Service which allows for DNS zone files to be generated and saved
   *
@@ -104,6 +106,8 @@ class Generator
     $config_dir = "/zones/db." . rtrim($this->getZoneOrigin($zone), ".");
 
     $this->filesystem->put($config_dir, $config);
+
+    $this->reloadServer();
   }
 
   /**
@@ -154,6 +158,11 @@ class Generator
     return $config;
   }
 
+  /**
+    * Saves the master zone file
+    *
+    * @param $zones
+    */
   public function saveMasterConfig($zones)
   {
     $config = $this->getMasterConfig($zones);
@@ -161,6 +170,22 @@ class Generator
     $config_dir = "/named.conf.local";
 
     $this->filesystem->put($config_dir, $config);
+
+    $this->reloadServer();
+  }
+ 
+  /**
+    * Reloads the server
+    */
+  public function reloadServer()
+  {
+    $process = new Process("sudo service bind9 restart");
+
+    $process->run();
+
+    if(!$process->isSuccessful()) {
+      throw new ProcessFailedException($process);
+    }
   }
 
 }

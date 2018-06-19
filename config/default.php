@@ -5,6 +5,6 @@
      */
      return [
        'dnsadmin' => [
-         'directory' => '/var/dns'
+         'directory' => '/etc/bind/dnsadmin'
        ]
      ];
