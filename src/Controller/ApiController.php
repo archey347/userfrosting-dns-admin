@@ -418,4 +418,38 @@ class ApiController extends SimpleController
     $ms->addMessage('Success', "Zone file was successfully saved");
   }
 
+  /**
+    * Sets the status of a Zones
+    * Method Type: GET
+    *
+    * @param Request $request
+    * @param Response $response
+    * @param array $args
+    * @return void
+    */
+  public function setStatus(Request $request, Response $response, $args)
+  {
+    $ms = $this->ci->alerts;
+
+    $zone = Zone::find($args['id']);
+
+    if(!$zone) {
+      $ms->addMessage('danger', 'Zone Not Found.');
+      return $response->withStatus(404);
+    }
+
+    $params = $request->getParsedBody();
+
+    Capsule::transaction(function () use ($params, $zone) {
+      $zone->enabled = $params['status'] == "enable";
+      $zone->save();
+    });
+
+    $dnsConfigGenerator = $this->ci->dnsConfigGenerator;
+
+    $dnsConfigGenerator->saveMasterConfig(Zone::get());
+
+    $ms->addMessage('success', "Successfully changed zone status.");
+  }
+
 }

@@ -4,6 +4,7 @@
   <table id="{{table.id}}" class="tablesorter table table-bordered table-hover table-striped" data-sortlist="{{table.sortlist}}">
     <thead>
      <th class="sorter-metatext" data-column-name="name" data-column-template="#zone-table-column-info" data-priority="1">Zone Name</th>
+     <th class="sorter-metatext" data-column-name="enabled" data-column-template="#zone-table-column-status" data-priority="1">Status</th>
      <th class="sorter-metatext" data-column-name="primary_dns" data-column-template="#zone-table-column-serial-number" data-priority="1">Serial Number</th>
      <th class="sorter-metatext" data-column-name="admin_domain" data-column-template="#zone-table-column-domains" data-priority="1">Domains</th>
      <th class="sorter-metatext" data-column-template="#zone-table-column-details" data-priority="1">Details</th>
@@ -26,6 +27,25 @@
               <a href="{{site.uri.public}}/dnsadmin/zones/z/{{row.id}}">{{row.name}}</a>
           </h4>
           <b>Type:</b> {{#if row.is_normal }}Normal{{else if row.is_ipv4}}Reverse IPv4{{else}}Reverse IPv6{{/if}}
+        </td>
+      </script>
+      <script id="zone-table-column-status" type="text/x-handlebars-template">
+        <td data-text="{{row.enabled}}">
+          <form class="js-status" action="{% endverbatim %}{{site.uri.public}}{% verbatim %}/api/dns/zones/z/{{row.id}}/status" method="PUT">
+            {% endverbatim %}{% include "forms/csrf.html.twig" %}{% verbatim %}
+            {{#if row.enabled }}
+            <span class="js-status-caption" style="color: green; margin-bottom: 10px; display: inline-block; font-weight: bold;">Enabled</span>
+            {{else}}
+            <span class="js-status-caption" style="color: red; margin-bottom: 10px; display: inline-block; font-weight: bold;">Disabled</span>
+            {{/if}}
+            <div class="js-status-button">
+            {{#if row.enabled }}
+              <button class="btn btn-danger" name="status" value="disable" type="submit">Disable</button>
+            {{else}}
+              <button class="btn btn-primary" name="status" value="enable" type="submit">Enable</button>
+            {{/if}}
+          </div>
+          </form>
         </td>
       </script>
       <script id="zone-table-column-serial-number" type="text/x-handlebars-template">

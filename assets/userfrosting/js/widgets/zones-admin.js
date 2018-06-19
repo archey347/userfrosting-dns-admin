@@ -90,6 +90,24 @@ function bindZoneTableButtons(el) {
         });
       });
     });
+    el.find('.js-status').each(function () {
+      $(this).ufForm({
+        msgTarget: $('#alerts-page')
+      }).on("submitSuccess.ufForm", function(event, data, textStatus, jqXHR) {
+        button = $(this).find('.js-status-button');
+        caption = $(this).find('.js-status-caption');
+
+        if (button.find('button').val() == "enable") {
+          button.html('<button class="btn btn-danger" name="status" value="disable" type="submit">Disable</button>');
+          caption.html('Enabled');
+          caption.css('color', 'green');
+        } else {
+          button.html('<button class="btn btn-primary" name="status" value="enable" type="submit">Enable</button>');
+          caption.html('Disabled');
+          caption.css('color', 'red')
+        }
+      });
+    });
 }
 
 function getTimestamp() {

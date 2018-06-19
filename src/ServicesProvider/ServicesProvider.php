@@ -35,7 +35,7 @@ class ServicesProvider
 
       $filesystem = new Filesystem($adapter);
 
-      $generator = new Generator($filesystem);
+      $generator = new Generator($filesystem, $directory);
 
       return $generator;
   });
