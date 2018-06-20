@@ -4,7 +4,7 @@ $app->group('/dnsadmin', function () use ($app) {
   $app->get('', 'UserFrosting\Sprinkle\Dnsadmin\Controller\AdminController:pageZonesAdmin');
   $app->get('/zones/z/{id}', 'UserFrosting\Sprinkle\Dnsadmin\Controller\AdminController:pageZoneEntriesAdmin');
 
-});
+})->add('authGuard');
 
 $app->group('/modals/dnsadmin', function () use ($app) {
   $app->get('/create-zone', 'UserFrosting\Sprinkle\Dnsadmin\Controller\AdminController:modalCreateZone');
@@ -19,4 +19,4 @@ $app->group('/modals/dnsadmin', function () use ($app) {
 
 
 
-});
+})->add('authGuard');

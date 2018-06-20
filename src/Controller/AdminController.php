@@ -14,7 +14,8 @@ use UserFrosting\Fortress\RequestSchema;
 use UserFrosting\Fortress\Adapter\JqueryValidationAdapter;
 use UserFrosting\Sprinkle\Dnsadmin\Database\Models\Zone;
 use UserFrosting\Sprinkle\Dnsadmin\Database\Models\ZoneEntry;
-
+use Badcow\DNS\Rdata\RdataException;
+use UserFrosting\Support\Exception\ForbiddenException;
 
 /**
   * Controller class that manages all of the DNS Admin front end UI
@@ -34,6 +35,16 @@ class AdminController extends SimpleController
     */
   public function pageZonesAdmin(Request $request, Response $response, $args)
   {
+    /** @var UserFrosting\Sprinkle\Account\Authorize\AuthorizationManager */
+    $authorizer = $this->ci->authorizer;
+
+    /** @var UserFrosting\Sprinkle\Account\Model\User $currentUser */
+    $currentUser = $this->ci->currentUser;
+
+    if (!$authorizer->checkAccess($currentUser, 'uri_dnsadmin')) {
+      throw new ForbiddenException();
+    }
+
     // Get the zone create validation rules
     $schema_create = new RequestSchema('schema://requests/zone-create.yaml');
     $validator_create = new JqueryValidationAdapter($schema_create, $this->ci->translator);
@@ -62,6 +73,16 @@ class AdminController extends SimpleController
     */
   public function pageZoneEntriesAdmin(Request $request, Response $response, $args)
   {
+    /** @var UserFrosting\Sprinkle\Account\Authorize\AuthorizationManager */
+    $authorizer = $this->ci->authorizer;
+
+    /** @var UserFrosting\Sprinkle\Account\Model\User $currentUser */
+    $currentUser = $this->ci->currentUser;
+
+    if (!$authorizer->checkAccess($currentUser, 'uri_dnsadmin')) {
+      throw new ForbiddenException();
+    }
+
     $zone = Zone::find($args['id']);
 
     if(!$zone) {
@@ -98,6 +119,16 @@ class AdminController extends SimpleController
     */
   public function modalCreateZone(Request $request, Response $response, $args)
   {
+    /** @var UserFrosting\Sprinkle\Account\Authorize\AuthorizationManager */
+    $authorizer = $this->ci->authorizer;
+
+    /** @var UserFrosting\Sprinkle\Account\Model\User $currentUser */
+    $currentUser = $this->ci->currentUser;
+
+    if (!$authorizer->checkAccess($currentUser, 'uri_dnsadmin')) {
+      throw new ForbiddenException();
+    }
+
     return $this->ci->view->render($response, 'modals/zone.html.twig', [
       "form" => [
         "id" => "form-zone-create",
@@ -118,6 +149,16 @@ class AdminController extends SimpleController
     */
   public function modalEditZone(Request $request, Response $response, $args)
   {
+    /** @var UserFrosting\Sprinkle\Account\Authorize\AuthorizationManager */
+    $authorizer = $this->ci->authorizer;
+
+    /** @var UserFrosting\Sprinkle\Account\Model\User $currentUser */
+    $currentUser = $this->ci->currentUser;
+
+    if (!$authorizer->checkAccess($currentUser, 'uri_dnsadmin')) {
+      throw new ForbiddenException();
+    }
+
     $ms = $this->ci->alerts;
 
     $zone_id = $request->getQueryParam('id');
@@ -155,6 +196,16 @@ class AdminController extends SimpleController
     */
   public function modalDeleteZone(Request $request, Response $response, $args)
   {
+    /** @var UserFrosting\Sprinkle\Account\Authorize\AuthorizationManager */
+    $authorizer = $this->ci->authorizer;
+
+    /** @var UserFrosting\Sprinkle\Account\Model\User $currentUser */
+    $currentUser = $this->ci->currentUser;
+
+    if (!$authorizer->checkAccess($currentUser, 'uri_dnsadmin')) {
+      throw new ForbiddenException();
+    }
+
     $ms = $this->ci->alerts;
 
     $zone_id = $request->getQueryParam('id');
@@ -189,6 +240,16 @@ class AdminController extends SimpleController
     */
   public function modalCreateZoneEntry(Request $request, Response $response, $args)
   {
+    /** @var UserFrosting\Sprinkle\Account\Authorize\AuthorizationManager */
+    $authorizer = $this->ci->authorizer;
+
+    /** @var UserFrosting\Sprinkle\Account\Model\User $currentUser */
+    $currentUser = $this->ci->currentUser;
+
+    if (!$authorizer->checkAccess($currentUser, 'uri_dnsadmin')) {
+      throw new ForbiddenException();
+    }
+
     $ms = $this->ci->alerts;
 
     $zone_id = $request->getQueryParam('id');
@@ -223,6 +284,16 @@ class AdminController extends SimpleController
     */
   public function modalEditZoneEntry(Request $request, Response $response, $args)
   {
+    /** @var UserFrosting\Sprinkle\Account\Authorize\AuthorizationManager */
+    $authorizer = $this->ci->authorizer;
+
+    /** @var UserFrosting\Sprinkle\Account\Model\User $currentUser */
+    $currentUser = $this->ci->currentUser;
+
+    if (!$authorizer->checkAccess($currentUser, 'uri_dnsadmin')) {
+      throw new ForbiddenException();
+    }
+
     $ms = $this->ci->alerts;
 
     $zone_entry_id = $request->getQueryParam('id');
@@ -258,6 +329,16 @@ class AdminController extends SimpleController
     */
   public function modalDeleteZoneEntry(Request $request, Response $response, $args)
   {
+    /** @var UserFrosting\Sprinkle\Account\Authorize\AuthorizationManager */
+    $authorizer = $this->ci->authorizer;
+
+    /** @var UserFrosting\Sprinkle\Account\Model\User $currentUser */
+    $currentUser = $this->ci->currentUser;
+
+    if (!$authorizer->checkAccess($currentUser, 'uri_dnsadmin')) {
+      throw new ForbiddenException();
+    }
+
     $ms = $this->ci->alerts;
 
     $zone_entry_id = $request->getQueryParam('id');
@@ -307,6 +388,16 @@ class AdminController extends SimpleController
     */
   public function modalExportZoneEntry(Request $request, Response $response, $args)
   {
+    /** @var UserFrosting\Sprinkle\Account\Authorize\AuthorizationManager */
+    $authorizer = $this->ci->authorizer;
+
+    /** @var UserFrosting\Sprinkle\Account\Model\User $currentUser */
+    $currentUser = $this->ci->currentUser;
+
+    if (!$authorizer->checkAccess($currentUser, 'uri_dnsadmin')) {
+      throw new ForbiddenException();
+    }
+
     $ms = $this->ci->alerts;
 
     $zone_id = $request->getQueryParam('id');
@@ -316,11 +407,14 @@ class AdminController extends SimpleController
       $ms->addMessage('danger', 'Invalid Zone ID.');
       return $response->withStatus(400);
     }
+    try {
+      $dnsConfigGenerator = $this->ci->dnsConfigGenerator;
 
-    $dnsConfigGenerator = $this->ci->dnsConfigGenerator;
-
-    $config = $dnsConfigGenerator->getZoneConfig($zone);
-
+      $config = $dnsConfigGenerator->getZoneConfig($zone);
+    } catch (RdataException $e) {
+      $ms->addMessage('danger', 'Error Generating Zone: '. $e->getMessage());
+      return $response->withStatus(400);
+    }
     $zone = $zone->toArray();
 
     $zone['config'] = $config;
