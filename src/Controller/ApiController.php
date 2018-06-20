@@ -19,6 +19,7 @@ use UserFrosting\Sprinkle\Dnsadmin\Database\Models\Zone;
 use UserFrosting\Sprinkle\Dnsadmin\Database\Models\ZoneEntry;
 use Illuminate\Database\Capsule\Manager as Capsule;
 use Badcow\DNS\Rdata\RdataException;
+use UserFrosting\Support\Exception\ForbiddenException;
 
 
 /**
@@ -48,6 +49,15 @@ class ApiController extends SimpleController
     */
   public function getZones(Request $request, Response $response, $args)
   {
+    /** @var UserFrosting\Sprinkle\Account\Authorize\AuthorizationManager */
+    $authorizer = $this->ci->authorizer;
+
+    /** @var UserFrosting\Sprinkle\Account\Model\User $currentUser */
+    $currentUser = $this->ci->currentUser;
+
+    if (!$authorizer->checkAccess($currentUser, 'uri_dnsadmin')) {
+      throw new ForbiddenException();
+    }
     // Get the GET parameters
     $params = $request->getQueryParams();
 
@@ -69,58 +79,68 @@ class ApiController extends SimpleController
    */
   public function createZone(Request $request, Response $response, $args)
   {
-      $params = $request->getParsedBody();
+    /** @var UserFrosting\Sprinkle\Account\Authorize\AuthorizationManager */
+    $authorizer = $this->ci->authorizer;
 
-      // Start off by checking to make sure that the zone type is correct
-      $schema = new RequestSchema('schema://requests/zone-create.yaml');
+    /** @var UserFrosting\Sprinkle\Account\Model\User $currentUser */
+    $currentUser = $this->ci->currentUser;
 
-      $transformer = new RequestDataTransformer($schema);
-      $data = $transformer->transform($params);
+    if (!$authorizer->checkAccess($currentUser, 'uri_dnsadmin')) {
+      throw new ForbiddenException();
+    }
 
-      $ms = $this->ci->alerts;
+    $params = $request->getParsedBody();
 
-      $validator = new ServerSideValidator($schema, $this->ci->translator);
+    // Start off by checking to make sure that the zone type is correct
+    $schema = new RequestSchema('schema://requests/zone-create.yaml');
 
-      if(!$validator->validate($data)) {
-        $ms->addValidationErrors($validator);
-        return $response->withStatus(400);
-      }
+    $transformer = new RequestDataTransformer($schema);
+    $data = $transformer->transform($params);
 
-      if($data['type'] == "normal") {
-        $data['name'] = $this->domainTransformer($data['name']);
-      }
+    $ms = $this->ci->alerts;
 
-      // Make sure that this zone doesn't already exist
-      $zone = Zone::where('name', $data['name'])->first();
+    $validator = new ServerSideValidator($schema, $this->ci->translator);
 
-      if($zone) {
-        $ms->addMessage('danger', 'A zone with that name already exists.');
-        return $response->withStatus(400);
-      }
+    if(!$validator->validate($data)) {
+      $ms->addValidationErrors($validator);
+      return $response->withStatus(400);
+    }
 
-      // Then add the zone to the Database
+    if($data['type'] == "normal") {
+      $data['name'] = $this->domainTransformer($data['name']);
+    }
 
-      Capsule::transaction(function() use($data) {
-        $zone = new Zone();
+    // Make sure that this zone doesn't already exist
+    $zone = Zone::where('name', $data['name'])->first();
 
-        $zone->name = $data['name'];
-        $zone->type = $data['type'];
-        $zone->ttl = $data['ttl'];
+    if($zone) {
+      $ms->addMessage('danger', 'A zone with that name already exists.');
+      return $response->withStatus(400);
+    }
 
-        $zone->primary_dns = $this->domainTransformer($data['primary_dns']);
-        $zone->admin_domain = $this->domainTransformer($data['admin_domain']);
+    // Then add the zone to the Database
 
-        $zone->serial_number_mode = $data['serial_number_mode'];
-        $zone->serial_number = $data['serial_number'];
+    Capsule::transaction(function() use($data) {
+      $zone = new Zone();
 
-        $zone->refresh = $data['refresh'];
-        $zone->retry = $data['retry'];
-        $zone->expiry = $data['expire'];
-        $zone->minimum = $data['minimum'];
-        $zone->save();
-      });
+      $zone->name = $data['name'];
+      $zone->type = $data['type'];
+      $zone->ttl = $data['ttl'];
 
-      $ms->addMessage('success', "Successfully added zone '{$data['name']}'");
+      $zone->primary_dns = $this->domainTransformer($data['primary_dns']);
+      $zone->admin_domain = $this->domainTransformer($data['admin_domain']);
+
+      $zone->serial_number_mode = $data['serial_number_mode'];
+      $zone->serial_number = $data['serial_number'];
+
+      $zone->refresh = $data['refresh'];
+      $zone->retry = $data['retry'];
+      $zone->expiry = $data['expire'];
+      $zone->minimum = $data['minimum'];
+      $zone->save();
+    });
+
+    $ms->addMessage('success', "Successfully added zone '{$data['name']}'");
 
   }
 
@@ -134,60 +154,70 @@ class ApiController extends SimpleController
    */
   public function editZone(Request $request, Response $response, $args)
   {
-      if(!isset($args['id'])) {
-        $ms->addMessage('danger', 'Zone Not Found.');
-        return $response->withStatus(404);
-      }
+    /** @var UserFrosting\Sprinkle\Account\Authorize\AuthorizationManager */
+    $authorizer = $this->ci->authorizer;
 
-      $zone = Zone::find($args['id']);
+    /** @var UserFrosting\Sprinkle\Account\Model\User $currentUser */
+    $currentUser = $this->ci->currentUser;
 
-      if(!$zone) {
-        $ms->addMessage('danger', 'Zone Not Found.');
-        return $response->withStatus(404);
-      }
+    if (!$authorizer->checkAccess($currentUser, 'uri_dnsadmin')) {
+      throw new ForbiddenException();
+    }
 
-      $params = $request->getParsedBody();
+    if(!isset($args['id'])) {
+      $ms->addMessage('danger', 'Zone Not Found.');
+      return $response->withStatus(404);
+    }
 
-      // Start off by checking to make sure that the zone type is correct
-      $schema = new RequestSchema('schema://requests/zone-edit.yaml');
+    $zone = Zone::find($args['id']);
 
-      $transformer = new RequestDataTransformer($schema);
-      $data = $transformer->transform($params);
+    if(!$zone) {
+      $ms->addMessage('danger', 'Zone Not Found.');
+      return $response->withStatus(404);
+    }
 
-      $ms = $this->ci->alerts;
+    $params = $request->getParsedBody();
 
-      $validator = new ServerSideValidator($schema, $this->ci->translator);
+    // Start off by checking to make sure that the zone type is correct
+    $schema = new RequestSchema('schema://requests/zone-edit.yaml');
 
-      if(!$validator->validate($data)) {
-        $ms->addValidationErrors($validator);
-        return $response->withStatus(400);
-      }
+    $transformer = new RequestDataTransformer($schema);
+    $data = $transformer->transform($params);
 
-      if($zone->type == "normal") {
-        $data['name'] = $this->domainTransformer($data['name']);
-      }
+    $ms = $this->ci->alerts;
 
-      Capsule::transaction(function() use($data, $zone) {
+    $validator = new ServerSideValidator($schema, $this->ci->translator);
 
-        $zone->name = $data['name'];
+    if(!$validator->validate($data)) {
+      $ms->addValidationErrors($validator);
+      return $response->withStatus(400);
+    }
 
-        $zone->ttl = $data['ttl'];
+    if($zone->type == "normal") {
+      $data['name'] = $this->domainTransformer($data['name']);
+    }
 
-        $zone->primary_dns = $this->domainTransformer($data['primary_dns']);
-        $zone->admin_domain = $this->domainTransformer($data['admin_domain']);
+    Capsule::transaction(function() use($data, $zone) {
 
-        $zone->serial_number_mode = $data['serial_number_mode'];
-        $zone->serial_number = $data['serial_number'];
+      $zone->name = $data['name'];
 
-        $zone->refresh = $data['refresh'];
-        $zone->retry = $data['retry'];
-        $zone->expiry = $data['expire'];
-        $zone->minimum = $data['minimum'];
+      $zone->ttl = $data['ttl'];
 
-        $zone->save();
-      });
+      $zone->primary_dns = $this->domainTransformer($data['primary_dns']);
+      $zone->admin_domain = $this->domainTransformer($data['admin_domain']);
 
-      $ms->addMessage('success', "Successfully modified zone '{$data['name']}'");
+      $zone->serial_number_mode = $data['serial_number_mode'];
+      $zone->serial_number = $data['serial_number'];
+
+      $zone->refresh = $data['refresh'];
+      $zone->retry = $data['retry'];
+      $zone->expiry = $data['expire'];
+      $zone->minimum = $data['minimum'];
+
+      $zone->save();
+    });
+
+    $ms->addMessage('success', "Successfully modified zone '{$data['name']}'");
 
   }
 
@@ -201,24 +231,34 @@ class ApiController extends SimpleController
    */
   public function deleteZone(Request $request, Response $response, $args)
   {
-      $ms = $this->ci->alerts;
+    /** @var UserFrosting\Sprinkle\Account\Authorize\AuthorizationManager */
+    $authorizer = $this->ci->authorizer;
 
-      $zone = Zone::find($args['id']);
+    /** @var UserFrosting\Sprinkle\Account\Model\User $currentUser */
+    $currentUser = $this->ci->currentUser;
 
-      if(!$zone) {
-        $ms->addMessage('danger', 'Zone Not Found.');
-        return $response->withStatus(404);
-      }
+    if (!$authorizer->checkAccess($currentUser, 'uri_dnsadmin')) {
+      throw new ForbiddenException();
+    }
 
-      $zone_name = $zone->name;
+    $ms = $this->ci->alerts;
 
-      Capsule::transaction(function() use($zone) {
-        $zone->entries()->delete();
-        $zone->delete();
+    $zone = Zone::find($args['id']);
 
-      });
+    if(!$zone) {
+      $ms->addMessage('danger', 'Zone Not Found.');
+      return $response->withStatus(404);
+    }
 
-      $ms->addMessage('success', "Zone '$zone_name' has been deleted.");
+    $zone_name = $zone->name;
+
+    Capsule::transaction(function() use($zone) {
+      $zone->entries()->delete();
+      $zone->delete();
+
+    });
+
+    $ms->addMessage('success', "Zone '$zone_name' has been deleted.");
 
   }
 
@@ -233,6 +273,16 @@ class ApiController extends SimpleController
     */
   public function getZoneEntries(Request $request, Response $response, $args)
   {
+    /** @var UserFrosting\Sprinkle\Account\Authorize\AuthorizationManager */
+    $authorizer = $this->ci->authorizer;
+
+    /** @var UserFrosting\Sprinkle\Account\Model\User $currentUser */
+    $currentUser = $this->ci->currentUser;
+
+    if (!$authorizer->checkAccess($currentUser, 'uri_dnsadmin')) {
+      throw new ForbiddenException();
+    }
+
     $ms = $this->ci->alerts;
 
     $zone = Zone::find($args['id']);
@@ -264,6 +314,16 @@ class ApiController extends SimpleController
     */
   public function createZoneEntry(Request $request, Response $response, $args)
   {
+    /** @var UserFrosting\Sprinkle\Account\Authorize\AuthorizationManager */
+    $authorizer = $this->ci->authorizer;
+
+    /** @var UserFrosting\Sprinkle\Account\Model\User $currentUser */
+    $currentUser = $this->ci->currentUser;
+
+    if (!$authorizer->checkAccess($currentUser, 'uri_dnsadmin')) {
+      throw new ForbiddenException();
+    }
+
     $ms = $this->ci->alerts;
 
     $zone = Zone::find($args['id']);
@@ -313,6 +373,16 @@ class ApiController extends SimpleController
     */
   public function editZoneEntry(Request $request, Response $response, $args)
   {
+    /** @var UserFrosting\Sprinkle\Account\Authorize\AuthorizationManager */
+    $authorizer = $this->ci->authorizer;
+
+    /** @var UserFrosting\Sprinkle\Account\Model\User $currentUser */
+    $currentUser = $this->ci->currentUser;
+
+    if (!$authorizer->checkAccess($currentUser, 'uri_dnsadmin')) {
+      throw new ForbiddenException();
+    }
+
     $ms = $this->ci->alerts;
 
     $zone = Zone::find($args['zone_id']);
@@ -369,6 +439,16 @@ class ApiController extends SimpleController
     */
   public function deleteZoneEntry(Request $request, Response $response, $args)
   {
+    /** @var UserFrosting\Sprinkle\Account\Authorize\AuthorizationManager */
+    $authorizer = $this->ci->authorizer;
+
+    /** @var UserFrosting\Sprinkle\Account\Model\User $currentUser */
+    $currentUser = $this->ci->currentUser;
+
+    if (!$authorizer->checkAccess($currentUser, 'uri_dnsadmin')) {
+      throw new ForbiddenException();
+    }
+
     $ms = $this->ci->alerts;
 
     $zone = Zone::find($args['zone_id']);
@@ -403,6 +483,16 @@ class ApiController extends SimpleController
     */
   public function saveConfiguration(Request $request, Response $response, $args)
   {
+    /** @var UserFrosting\Sprinkle\Account\Authorize\AuthorizationManager */
+    $authorizer = $this->ci->authorizer;
+
+    /** @var UserFrosting\Sprinkle\Account\Model\User $currentUser */
+    $currentUser = $this->ci->currentUser;
+
+    if (!$authorizer->checkAccess($currentUser, 'uri_dnsadmin')) {
+      throw new ForbiddenException();
+    }
+
     $ms = $this->ci->alerts;
 
     $zone = Zone::find($args['id']);
@@ -433,6 +523,16 @@ class ApiController extends SimpleController
     */
   public function setStatus(Request $request, Response $response, $args)
   {
+    /** @var UserFrosting\Sprinkle\Account\Authorize\AuthorizationManager */
+    $authorizer = $this->ci->authorizer;
+
+    /** @var UserFrosting\Sprinkle\Account\Model\User $currentUser */
+    $currentUser = $this->ci->currentUser;
+
+    if (!$authorizer->checkAccess($currentUser, 'uri_dnsadmin')) {
+      throw new ForbiddenException();
+    }
+
     $ms = $this->ci->alerts;
 
     $zone = Zone::find($args['id']);
