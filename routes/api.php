@@ -17,4 +17,4 @@ $app->group('/api/dns', function () use ($app) {
 
 
 
-});
+})->add('authGuard');
