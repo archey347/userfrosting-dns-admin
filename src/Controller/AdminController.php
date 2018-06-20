@@ -14,7 +14,7 @@ use UserFrosting\Fortress\RequestSchema;
 use UserFrosting\Fortress\Adapter\JqueryValidationAdapter;
 use UserFrosting\Sprinkle\Dnsadmin\Database\Models\Zone;
 use UserFrosting\Sprinkle\Dnsadmin\Database\Models\ZoneEntry;
-
+use Badcow\DNS\Rdata\RdataException;
 
 /**
   * Controller class that manages all of the DNS Admin front end UI
@@ -316,11 +316,14 @@ class AdminController extends SimpleController
       $ms->addMessage('danger', 'Invalid Zone ID.');
       return $response->withStatus(400);
     }
+    try {
+      $dnsConfigGenerator = $this->ci->dnsConfigGenerator;
 
-    $dnsConfigGenerator = $this->ci->dnsConfigGenerator;
-
-    $config = $dnsConfigGenerator->getZoneConfig($zone);
-
+      $config = $dnsConfigGenerator->getZoneConfig($zone);
+    } catch (RdataException $e) {
+      $ms->addMessage('danger', 'Error Generating Zone: '. $e->getMessage());
+      return $response->withStatus(400);
+    }
     $zone = $zone->toArray();
 
     $zone['config'] = $config;

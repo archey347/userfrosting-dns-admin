@@ -18,6 +18,7 @@ use UserFrosting\Fortress\ServerSideValidator;
 use UserFrosting\Sprinkle\Dnsadmin\Database\Models\Zone;
 use UserFrosting\Sprinkle\Dnsadmin\Database\Models\ZoneEntry;
 use Illuminate\Database\Capsule\Manager as Capsule;
+use Badcow\DNS\Rdata\RdataException;
 
 
 /**
@@ -410,11 +411,14 @@ class ApiController extends SimpleController
       $ms->addMessage('danger', 'Zone Not Found.');
       return $response->withStatus(404);
     }
+    try {
+      $dnsConfigGenerator = $this->ci->dnsConfigGenerator;
 
-    $dnsConfigGenerator = $this->ci->dnsConfigGenerator;
-
-    $dnsConfigGenerator->saveZone($zone);
-
+      $dnsConfigGenerator->saveZone($zone);
+    } catch (RdataException $e) {
+      $ms->addMessage('danger', 'Error Generating Zone: '. $e->getMessage());
+      return $response->withStatus(400);
+    }
     $ms->addMessage('Success', "Zone file was successfully saved");
   }
 
